@@ -1,5 +1,4 @@
-site_name: My Docs
-site_url: https://sitename.example
+site_name: Training in Machine Learning (ML_train)
 theme:
   name: material
   palette:
