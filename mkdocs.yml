@@ -1,0 +1,15 @@
+site_name: My Docs
+site_url: https://sitename.example
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: green
+    accent: deep purple
+nav:
+  - Home: index.md
+  - Requirements: requirements.md
+
+
+repo_url: https://github.com/dgalvis/ML_train
+site_url: https://dgalvis.github.io/ML_train
