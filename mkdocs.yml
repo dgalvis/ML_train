@@ -8,6 +8,12 @@ theme:
 nav:
   - Home: index.md
   - Requirements: requirements.md
+markdown_extensions:
+  - pymdownx.arithmatex:
+      generic: true
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
 
 
 repo_url: https://github.com/dgalvis/ML_train
