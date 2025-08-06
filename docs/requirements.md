@@ -12,8 +12,13 @@ pip3 install mkdocs-pymdownx-material-extras
 conda install -c conda-forge r-base r-essentials r-pacman r-psychtools
 ```
 
-We probably don't need all of these packages, but this is the environment I'm working with. 
+We probably don't need all of these packages, but this is the environment I'm working with. You can also try:
 
+```bash
+    conda env create -f requirements_mac.yml
+```
+
+using the requirements file in the main directory. I have typically found that this only works on the same OS though.
 
 ### Some notes
 - `scikit-learn` and `torch` are for machine learning.
