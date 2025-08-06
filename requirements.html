@@ -373,17 +373,18 @@ conda install -c conda-forge streamlit scikit-plot sqlite grip
 pip3 install torch torchvision torchaudio
 pip3 install mkdocs mkdocs-material
 pip3 install mkdocs-pymdownx-material-extras
-conda install -c conda-forge r-base r-essentials r-pacman
+conda install -c conda-forge r-base r-essentials r-pacman r-psychtools
 </code></pre>
 <p>We probably don't need all of these packages, but this is the environment I'm working with. </p>
 <h3 id="some-notes">Some notes</h3>
 <ul>
-<li><code>scikit-learn</code> and <code>torch</code> are for machine learning</li>
-<li><code>sqlite</code> is used to manipulate SQL databases using SQL in Python. (Very useful data structures for industry)</li>
-<li><code>mkdocs</code> is a great package for making code documentation websites (Like this one!)</li>
+<li><code>scikit-learn</code> and <code>torch</code> are for machine learning.</li>
+<li><code>sqlite</code> is used to manipulate SQL databases using SQL in Python. (Very useful data structures for industry).</li>
+<li><code>mkdocs</code> is a great package for making code documentation websites (Like this one!).</li>
 <li><code>nbconvert</code> converts Jupyter notebooks to .py files. </li>
-<li><code>matplotlib</code>, <code>seaborn</code>, <code>plotly</code> is for plotting and data visualisation, <code>streamlit</code> is for dashboards</li>
+<li><code>matplotlib</code>, <code>seaborn</code>, <code>plotly</code> is for plotting and data visualisation, <code>streamlit</code> is for dashboards.</li>
 <li><code>r-base</code>, <code>r-essentials</code>, <code>r-pacman</code> will let us use <code>R</code>. <code>r-pacman</code> is a package manager that will automatically download required packages from CRAN. For deployment, it might be better to download packages using <code>conda</code>. This will work fine for us though.</li>
+<li><code>r-psychtools</code> has the package <code>psych</code> which contains useful functions like <code>describe()</code>. On my Mac, I needed to have XCode installed first for this to work.</li>
 </ul>
 
 
