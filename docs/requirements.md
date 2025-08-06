@@ -9,7 +9,7 @@ conda install -c conda-forge streamlit scikit-plot sqlite grip
 pip3 install torch torchvision torchaudio
 pip3 install mkdocs mkdocs-material
 pip3 install mkdocs-pymdownx-material-extras
-conda install -c conda-forge r-base r-essentials r-pacman r-psychtools
+conda install -c conda-forge r-base r-essentials r-pacman r-psychtools r-lars
 ```
 
 We probably don't need all of these packages, but this is the environment I'm working with. You can also try:
