@@ -9,7 +9,7 @@ conda install -c conda-forge streamlit scikit-plot sqlite grip
 pip3 install torch torchvision torchaudio
 pip3 install mkdocs mkdocs-material
 pip3 install mkdocs-pymdownx-material-extras
-conda install -c conda-forge r-base r-essentials
+conda install -c conda-forge r-base r-essentials r-pacman
 ```
 
 We probably don't need all of these packages, but this is the environment I'm working with. 
@@ -21,3 +21,5 @@ We probably don't need all of these packages, but this is the environment I'm wo
 - `mkdocs` is a great package for making code documentation websites (Like this one!)
 - `nbconvert` converts Jupyter notebooks to .py files. 
 - `matplotlib`, `seaborn`, `plotly` is for plotting and data visualisation, `streamlit` is for dashboards
+- `r-base`, `r-essentials`, `r-pacman` will let us use `R`. `r-pacman` is a package manager that will automatically download required packages from CRAN. For deployment, it might be better to download packages using `conda`. This will work fine for us though.
+
