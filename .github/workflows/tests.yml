@@ -1,0 +1,25 @@
+name: Run Unit Tests (Conda)
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Miniconda
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        activate-environment: ML_train_test
+        environment-file: requirements_test.yml
+        auto-activate-base: false
+        python-version: "3.13.5"
+
+    - name: Run tests
+      shell: bash -l
+      run: |
+        cd codes
+        python -m modules.testLinReg
