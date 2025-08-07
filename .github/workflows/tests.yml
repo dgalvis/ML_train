@@ -16,7 +16,7 @@ jobs:
         activate-environment: ML_train_test
         environment-file: requirements_test.yml
         auto-activate-base: false
-        python-version: "3.13.5"
+        python-version: "3.12.11"
 
     - name: Run tests
       shell: bash -l
