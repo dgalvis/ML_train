@@ -19,7 +19,7 @@ jobs:
         python-version: "3.12.11"
 
     - name: Run tests
-      shell: bash -l
+      shell: bash -l {0}
       run: |
         cd codes
         python -m modules.testLinReg
