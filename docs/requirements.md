@@ -2,6 +2,10 @@ First off, I would recommend using a Conda virual environment:
 
 ```bash
 conda create --name ML_train
+conda activate ML_train
+```
+
+```bash
 conda install -c conda-forge python ipython jupyterlab 
 conda install -c conda-forge scipy pandas numpy networkx scikit-learn
 conda install -c conda-forge nbconvert matplotlib seaborn plotly
