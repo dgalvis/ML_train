@@ -5,6 +5,7 @@
 ![R](https://img.shields.io/badge/R-4.4.3-red)
 
 ![Tests](https://github.com/dgalvis/ML_train/actions/workflows/tests.yml/badge.svg)
+![pages-build-deployment](https://github.com/dgalvis/ML_train/actions/workflows/pages/pages-build-deployment/badge.svg)
 
 - [Requirements](requirements.md)
 
