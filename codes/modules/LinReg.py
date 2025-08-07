@@ -199,7 +199,7 @@ class LinearRegression:
 
         return coeff_RSE
 
-    def p_values(self) -> Tuple[np.ndarray[float], np.ndarray[float]]:
+    def coefficients_p_values(self) -> Tuple[np.ndarray[float], np.ndarray[float]]:
         """
         Computes the t-statistics and two-sided p-values for each coefficient
         in the fitted linear regression model.
@@ -357,7 +357,7 @@ class LinearRegression:
         print(f'Max: {quartiles[4]:.4f}\n')
     
         # Get coefficient statistics
-        t, p = self.p_values()
+        t, p = self.coefficients_p_values()
         coefs = np.column_stack((self.beta, self.coefficients_SE(), t, p))
     
         print(f'{"Coefficient":>12}  {"Std Error":>10}  {"t-value":>10}  {"p-value":>10}')
