@@ -366,7 +366,9 @@
 
 <p>First off, I would recommend using a Conda virual environment:</p>
 <pre><code class="language-bash">conda create --name ML_train
-conda install -c conda-forge python ipython jupyterlab 
+conda activate ML_train
+</code></pre>
+<pre><code class="language-bash">conda install -c conda-forge python ipython jupyterlab 
 conda install -c conda-forge scipy pandas numpy networkx scikit-learn
 conda install -c conda-forge nbconvert matplotlib seaborn plotly
 conda install -c conda-forge streamlit scikit-plot sqlite grip
