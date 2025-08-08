@@ -439,6 +439,24 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#example-from-r" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example from R
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-from-python" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example from Python
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -598,6 +616,24 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#example-from-r" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example from R
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-from-python" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example from Python
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -689,6 +725,84 @@ y_M
 <hr>
 <hr>
 
+<h2 id="example-from-r">Example from <code>R</code><a class="headerlink" href="#example-from-r" title="Permanent link">&para;</a></h2>
+<p>The programming language <code>R</code> is widely used in statistics and data visualisation. It also provides a useful library of built-in datasets.</p>
+<p>To explore this, navigate to the folder <code>./codes/</code> in the repository. Activate the virtual environment we created earlier (see <a href="requirements.html">Requirements</a>).</p>
+<p>Then, launch Jupyter Notebook:</p>
+<div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a>jupyter<span class="w"> </span>notebook
+</span></code></pre></div></td></tr></table></div>
+<p>Open the notebook named <code>linear_regression.ipynb</code>, which contains <code>R</code> code. <strong>Make sure you use the <code>R</code> kernel.</strong> </p>
+<p>We begin by importing <code>datasets</code> package:</p>
+<div class="language-r highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="nf">library</span><span class="p">(</span><span class="n">datasets</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
+<p>This package includes several classic datasets, one of which is <code>USJudgeRatings</code>. This dataset contains average ratings for 43 judges across several dimensions (e.g., integrity, diligence, writing quality). The 12th column is the rating for “worthy of retention,” which we’ll try to predict using the first 11 features.</p>
+<p><div class="language-r highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
+<span class="normal"><a href="#__codelineno-2-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="n">dataset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">USJudgeRatings</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="nf">head</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
+This command prints the first six rows of the dataset:</p>
+<table class="dataframe">
+<caption>US Judge Ratings</caption>
+<thead>
+    <tr><th></th><th scope=col>CONT</th><th scope=col>INTG</th><th scope=col>DMNR</th><th scope=col>DILG</th><th scope=col>CFMG</th><th scope=col>DECI</th><th scope=col>PREP</th><th scope=col>FAMI</th><th scope=col>ORAL</th><th scope=col>WRIT</th><th scope=col>PHYS</th><th scope=col>RTEN</th></tr>
+</thead>
+<tbody>
+    <tr><th scope=row>AARONSON,L.H.</th><td>5.7</td><td>7.9</td><td>7.7</td><td>7.3</td><td>7.1</td><td>7.4</td><td>7.1</td><td>7.1</td><td>7.1</td><td>7.0</td><td>8.3</td><td>7.8</td></tr>
+    <tr><th scope=row>ALEXANDER,J.M.</th><td>6.8</td><td>8.9</td><td>8.8</td><td>8.5</td><td>7.8</td><td>8.1</td><td>8.0</td><td>8.0</td><td>7.8</td><td>7.9</td><td>8.5</td><td>8.7</td></tr>
+    <tr><th scope=row>ARMENTANO,A.J.</th><td>7.2</td><td>8.1</td><td>7.8</td><td>7.8</td><td>7.5</td><td>7.6</td><td>7.5</td><td>7.5</td><td>7.3</td><td>7.4</td><td>7.9</td><td>7.8</td></tr>
+    <tr><th scope=row>BERDON,R.I.</th><td>6.8</td><td>8.8</td><td>8.5</td><td>8.8</td><td>8.3</td><td>8.5</td><td>8.7</td><td>8.7</td><td>8.4</td><td>8.5</td><td>8.8</td><td>8.7</td></tr>
+    <tr><th scope=row>BRACKEN,J.J.</th><td>7.3</td><td>6.4</td><td>4.3</td><td>6.5</td><td>6.0</td><td>6.2</td><td>5.7</td><td>5.7</td><td>5.1</td><td>5.3</td><td>5.5</td><td>4.8</td></tr>
+    <tr><th scope=row>BURNS,E.B.</th><td>6.2</td><td>8.8</td><td>8.7</td><td>8.5</td><td>7.9</td><td>8.0</td><td>8.1</td><td>8.0</td><td>8.0</td><td>8.0</td><td>8.6</td><td>8.6</td></tr>
+</tbody>
+</table>
+
+<p>To prepare the data and run linear regression:</p>
+<div class="language-r highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span>
+<span class="normal"><a href="#__codelineno-3-2">2</a></span>
+<span class="normal"><a href="#__codelineno-3-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="n">x</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.matrix</span><span class="p">(</span><span class="n">dataset</span><span class="p">[,</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">11</span><span class="p">)])</span><span class="w"> </span><span class="c1"># First 11 dimensions are Features</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="n">y</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.matrix</span><span class="p">(</span><span class="n">dataset</span><span class="p">[,</span><span class="w"> </span><span class="m">12</span><span class="p">])</span><span class="w"> </span><span class="c1"># last dimeions is the Output (Retention rating)</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="n">reg</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">x</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
+<p>This creates matrices <code>x</code> and <code>y</code> and uses the <code>lm</code> function to perform linear regression.</p>
+<p>To see the model summary:</p>
+<div class="language-r highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="nf">summary</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
+<p>This produces several useful statistics:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">Call</span><span class="o">:</span>
+<span class="n">lm</span><span class="o">(</span><span class="n">formula</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">x</span><span class="o">)</span>
+
+<span class="n">Residuals</span><span class="o">:</span>
+<span class="w">     </span><span class="n">Min</span><span class="w">       </span><span class="mi">1</span><span class="n">Q</span><span class="w">   </span><span class="n">Median</span><span class="w">       </span><span class="mi">3</span><span class="n">Q</span><span class="w">      </span><span class="n">Max</span>
+<span class="o">-</span><span class="mf">0.22123</span><span class="w"> </span><span class="o">-</span><span class="mf">0.06155</span><span class="w"> </span><span class="o">-</span><span class="mf">0.01055</span><span class="w">  </span><span class="mf">0.05045</span><span class="w">  </span><span class="mf">0.26079</span>
+
+<span class="n">Coefficients</span><span class="o">:</span>
+<span class="w">            </span><span class="n">Estimate</span><span class="w"> </span><span class="n">Std</span><span class="o">.</span><span class="w"> </span><span class="n">Error</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="n">Pr</span><span class="o">(&gt;|</span><span class="n">t</span><span class="o">|)</span>
+<span class="o">(</span><span class="n">Intercept</span><span class="o">)</span><span class="w"> </span><span class="o">-</span><span class="mf">2.11943</span><span class="w">    </span><span class="mf">0.51904</span><span class="w">  </span><span class="o">-</span><span class="mf">4.083</span><span class="w"> </span><span class="mf">0.000290</span><span class="w"> </span><span class="o">***</span>
+<span class="n">xCONT</span><span class="w">        </span><span class="mf">0.01280</span><span class="w">    </span><span class="mf">0.02586</span><span class="w">   </span><span class="mf">0.495</span><span class="w"> </span><span class="mf">0.624272</span>
+<span class="n">xINTG</span><span class="w">        </span><span class="mf">0.36484</span><span class="w">    </span><span class="mf">0.12936</span><span class="w">   </span><span class="mf">2.820</span><span class="w"> </span><span class="mf">0.008291</span><span class="w"> </span><span class="o">**</span>
+<span class="n">xDMNR</span><span class="w">        </span><span class="mf">0.12540</span><span class="w">    </span><span class="mf">0.08971</span><span class="w">   </span><span class="mf">1.398</span><span class="w"> </span><span class="mf">0.172102</span>
+<span class="n">xDILG</span><span class="w">        </span><span class="mf">0.06669</span><span class="w">    </span><span class="mf">0.14303</span><span class="w">   </span><span class="mf">0.466</span><span class="w"> </span><span class="mf">0.644293</span>
+<span class="n">xCFMG</span><span class="w">       </span><span class="o">-</span><span class="mf">0.19453</span><span class="w">    </span><span class="mf">0.14779</span><span class="w">  </span><span class="o">-</span><span class="mf">1.316</span><span class="w"> </span><span class="mf">0.197735</span>
+<span class="n">xDECI</span><span class="w">        </span><span class="mf">0.27829</span><span class="w">    </span><span class="mf">0.13826</span><span class="w">   </span><span class="mf">2.013</span><span class="w"> </span><span class="mf">0.052883</span><span class="w"> </span><span class="o">.</span>
+<span class="n">xPREP</span><span class="w">       </span><span class="o">-</span><span class="mf">0.00196</span><span class="w">    </span><span class="mf">0.24001</span><span class="w">  </span><span class="o">-</span><span class="mf">0.008</span><span class="w"> </span><span class="mf">0.993536</span>
+<span class="n">xFAMI</span><span class="w">       </span><span class="o">-</span><span class="mf">0.13579</span><span class="w">    </span><span class="mf">0.26725</span><span class="w">  </span><span class="o">-</span><span class="mf">0.508</span><span class="w"> </span><span class="mf">0.614972</span>
+<span class="n">xORAL</span><span class="w">        </span><span class="mf">0.54782</span><span class="w">    </span><span class="mf">0.27725</span><span class="w">   </span><span class="mf">1.976</span><span class="w"> </span><span class="mf">0.057121</span><span class="w"> </span><span class="o">.</span>
+<span class="n">xWRIT</span><span class="w">       </span><span class="o">-</span><span class="mf">0.06806</span><span class="w">    </span><span class="mf">0.31485</span><span class="w">  </span><span class="o">-</span><span class="mf">0.216</span><span class="w"> </span><span class="mf">0.830269</span>
+<span class="n">xPHYS</span><span class="w">        </span><span class="mf">0.26881</span><span class="w">    </span><span class="mf">0.06213</span><span class="w">   </span><span class="mf">4.326</span><span class="w"> </span><span class="mf">0.000146</span><span class="w"> </span><span class="o">***</span>
+<span class="o">---</span>
+<span class="n">Signif</span><span class="o">.</span><span class="w"> </span><span class="n">codes</span><span class="o">:</span><span class="w">  </span><span class="mi">0</span><span class="w"> </span><span class="err">‘</span><span class="o">***</span><span class="err">’</span><span class="w"> </span><span class="mf">0.001</span><span class="w"> </span><span class="err">‘</span><span class="o">**</span><span class="err">’</span><span class="w"> </span><span class="mf">0.01</span><span class="w"> </span><span class="err">‘</span><span class="o">*</span><span class="err">’</span><span class="w"> </span><span class="mf">0.05</span><span class="w"> </span><span class="err">‘</span><span class="o">.</span><span class="err">’</span><span class="w"> </span><span class="mf">0.1</span><span class="w"> </span><span class="err">‘</span><span class="w"> </span><span class="err">’</span><span class="w"> </span><span class="mi">1</span>
+
+<span class="n">Residual</span><span class="w"> </span><span class="n">standard</span><span class="w"> </span><span class="n">error</span><span class="o">:</span><span class="w"> </span><span class="mf">0.1174</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="mi">31</span><span class="w"> </span><span class="n">degrees</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">freedom</span>
+<span class="n">Multiple</span><span class="w"> </span><span class="n">R</span><span class="o">-</span><span class="n">squared</span><span class="o">:</span><span class="w">  </span><span class="mf">0.9916</span><span class="o">,</span><span class="w">    </span><span class="n">Adjusted</span><span class="w"> </span><span class="n">R</span><span class="o">-</span><span class="n">squared</span><span class="o">:</span><span class="w">  </span><span class="mf">0.9886</span>
+<span class="n">F</span><span class="o">-</span><span class="n">statistic</span><span class="o">:</span><span class="w"> </span><span class="mf">332.9</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="mi">11</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="mi">31</span><span class="w"> </span><span class="n">DF</span><span class="o">,</span><span class="w">  </span><span class="n">p</span><span class="o">-</span><span class="n">value</span><span class="o">:</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">2.2</span><span class="n">e</span><span class="o">-</span><span class="mi">16</span>
+</code></pre></div>
+
+<p>I don't know about you, but I think this is <strong>mega</strong>. However, we’ll take it a step further and write our own <code>Python</code> code — mostly from scratch — to calculate these statistics ourselves and better understand what they mean.</p>
+<hr>
+<hr>
+
+<h2 id="example-from-python">Example from Python<a class="headerlink" href="#example-from-python" title="Permanent link">&para;</a></h2>
+
 
 
 
@@ -736,14 +850,14 @@ y_M
     
     
       
-      <script id="__config" type="application/json">{"base": ".", "features": [], "search": "assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": ".", "features": ["content.code.annotate", "content.code.copy"], "search": "assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="assets/javascripts/bundle.50899def.min.js"></script>
       
         <script src="javascripts/mathjax.js"></script>
       
-        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js?load=ams,bm"></script>
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
     
   </body>
