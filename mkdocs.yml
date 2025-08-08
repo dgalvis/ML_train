@@ -8,6 +8,7 @@ theme:
 nav:
   - Home: index.md
   - Requirements: requirements.md
+  - Linear Regression: linear_regression.md
 markdown_extensions:
   - pymdownx.arithmatex:
       generic: true
