@@ -71,6 +71,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#introduction" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -354,6 +359,19 @@
       
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Linear Regression
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="linear_regression.html" class="md-nav__link md-nav__link--active">
         
   
@@ -365,6 +383,65 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      Introduction
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Introduction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#model-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      Model Definition
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fitting-the-model-ordinary-least-squares-ols" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fitting the Model: Ordinary Least Squares (OLS)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#closed-form-solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Closed-Form Solution
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -473,6 +550,56 @@
   
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      Introduction
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Introduction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#model-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      Model Definition
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fitting-the-model-ordinary-least-squares-ols" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fitting the Model: Ordinary Least Squares (OLS)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#closed-form-solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Closed-Form Solution
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -492,7 +619,75 @@
 
   <h1>Linear Regression</h1>
 
-
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
+<p>Linear regression is a type of supervised learning, where the goal is to identify a best-fit function between a dependent variable and one or more independent variables.</p>
+<hr />
+<h3 id="model-definition">Model Definition<a class="headerlink" href="#model-definition" title="Permanent link">&para;</a></h3>
+<p>We assume the model takes the form:</p>
+<div class="arithmatex">\[
+y_i = \beta_0 + \beta_1 x_{i,1} + \dots + \beta_N x_{i,N} + \epsilon_i,
+\]</div>
+<p>where <span class="arithmatex">\( i = 1, \dots, M \)</span> indexes the samples in the training set.</p>
+<p>The components of the model are:</p>
+<ul>
+<li><span class="arithmatex">\( x_{i,j} \)</span> — Feature <span class="arithmatex">\( j \)</span> for sample <span class="arithmatex">\( i \)</span>; there are <span class="arithmatex">\( N \)</span> features.</li>
+<li><span class="arithmatex">\( y_i \)</span> — The output (target) for sample <span class="arithmatex">\( i \)</span>.</li>
+<li><span class="arithmatex">\( \epsilon_i \)</span> — The error term, representing noise or unexplained variation.</li>
+<li><span class="arithmatex">\( \beta_0 \)</span> — The intercept (bias).</li>
+<li><span class="arithmatex">\( \beta_j \)</span> — The coefficient for feature <span class="arithmatex">\( j \)</span>.</li>
+</ul>
+<blockquote>
+<p><em>Note:</em> We typically use <span class="arithmatex">\( \beta \)</span> for both the true model parameters and the estimated parameters. It's common to overload the symbol and rely on context, though you may also see <span class="arithmatex">\( \hat{\beta} \)</span> used for estimated values.</p>
+</blockquote>
+<hr />
+<h3 id="fitting-the-model-ordinary-least-squares-ols">Fitting the Model: Ordinary Least Squares (OLS)<a class="headerlink" href="#fitting-the-model-ordinary-least-squares-ols" title="Permanent link">&para;</a></h3>
+<p>The most common way to fit a linear regression model is with the <strong>ordinary least squares (OLS)</strong> method. The objective is to find parameters <span class="arithmatex">\( \boldsymbol{\beta} \)</span> that minimise the following cost function:</p>
+<div class="arithmatex">\[
+J(\boldsymbol{\beta}) = \frac{1}{2} \sum_{i=1}^{M} \left(h_{\boldsymbol{\beta}}(X_i) - y_i\right)^2,
+\]</div>
+<p>where:</p>
+<ul>
+<li><span class="arithmatex">\( \boldsymbol{\beta} = \begin{bmatrix} \beta_0 \\ \beta_1 \\ \vdots \\ \beta_N \end{bmatrix} \)</span> — Vector of model parameters.</li>
+<li><span class="arithmatex">\( X_i = \begin{bmatrix} 1 &amp; x_{i,1} &amp; x_{i,2} &amp; \dots &amp; x_{i,N} \end{bmatrix} \)</span> — Row vector of features for sample <span class="arithmatex">\( i \)</span>, including a 1 to account for the bias term <span class="arithmatex">\( \beta_0 \)</span>.</li>
+<li><span class="arithmatex">\( h_{\boldsymbol{\beta}}(X_i) \)</span> — The hypothesis (model) function, defined as:</li>
+</ul>
+<div class="arithmatex">\[
+h_{\boldsymbol{\beta}}(X_i) = \beta_0 + \beta_1 x_{i,1} + \dots + \beta_N x_{i,N} = \boldsymbol{\beta}^\top X_i^\top.
+\]</div>
+<p>Thus, we are minimising the <strong>sum of squared differences</strong> between the predicted outputs <span class="arithmatex">\( h_{\boldsymbol{\beta}}(X_i) \)</span> and the actual outputs <span class="arithmatex">\( y_i \)</span> across all training samples.</p>
+<hr />
+<h3 id="closed-form-solution">Closed-Form Solution<a class="headerlink" href="#closed-form-solution" title="Permanent link">&para;</a></h3>
+<p>To simplify notation and enable vectorised computation, we define:</p>
+<ul>
+<li>The <strong>design matrix</strong>:</li>
+</ul>
+<div class="arithmatex">\[
+X = \begin{bmatrix}
+X_1 \\
+X_2 \\
+\vdots \\
+X_M
+\end{bmatrix}
+\quad \text{(an \( M \times (N+1) \) matrix)}
+\]</div>
+<ul>
+<li>The output vector:</li>
+</ul>
+<div class="arithmatex">\[
+\mathbf{y} = \begin{bmatrix}
+y_1 \\
+y_2 \\
+\vdots \\
+y_M
+\end{bmatrix}
+\]</div>
+<p>OLS is one of the few machine learning methods with a <strong>closed-form analytic solution</strong> for the best-fit parameters. The solution is:</p>
+<div class="arithmatex">\[
+\boldsymbol{\beta} = (X^\top X)^{-1} X^\top \mathbf{y}
+\]</div>
+<p>This gives the value of <span class="arithmatex">\( \boldsymbol{\beta} \)</span> that minimises the cost function and fits the training data as closely as possible in the least-squares sense.</p>
+<hr>
+<hr>
 
 
 
@@ -548,7 +743,7 @@
       
         <script src="javascripts/mathjax.js"></script>
       
-        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js?load=ams,bm"></script>
       
     
   </body>
