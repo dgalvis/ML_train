@@ -5,6 +5,9 @@ theme:
     scheme: slate
     primary: green
     accent: deep purple
+  features:
+    - content.code.annotate
+    - content.code.copy
 nav:
   - Machine Learning Tutorials: index.md
   - Requirements: requirements.md
@@ -20,12 +23,18 @@ markdown_extensions:
   - admonition
   - codehilite
   - footnotes
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
   - pymdownx.arithmatex:
       generic: true
 extra_javascript:
   - javascripts/mathjax.js
-  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js?load=ams,bm
-
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
 repo_url: https://github.com/dgalvis/ML_train
 site_url: https://dgalvis.github.io/ML_train
