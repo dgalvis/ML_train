@@ -13,6 +13,8 @@ The code and notebooks are structured as hands-on **tutorials**, so feel free to
 
 To get started, please set up your **virtual environment**. Instructions can be found on the [Requirements](requirements.md) page.
 
+<hr>
+<hr>
 
 ## 🤖 Supervised Learning
 
@@ -29,6 +31,8 @@ To get started, please set up your **virtual environment**. Instructions can be 
   A model is trained on a labeled dataset of emails, where each email is marked as *spam* or *not spam*. The model learns to classify new, unseen emails accordingly.  
   → This is an example of **classification**, because the target output is a **categorical variable** (e.g., {"spam", "not spam"} or {0, 1}).
 
+---
+
 ### 📈 Regression
 
 **Regression analysis** refers to a family of methods used to estimate the relationship between a **continuous dependent variable** (also called the output, response, or label) and one or more **independent variables** (also called features, predictors, or regressors).
@@ -38,6 +42,8 @@ To get started, please set up your **virtual environment**. Instructions can be 
 - [Linear Regression](linear_regression.md)
 - *(More examples coming soon)*
 
+---
+
 ### 🧮 Classification
 
 **Classification** is the task of predicting **categorical labels** from input data. The model learns to assign new data points to one of a finite set of classes.
@@ -46,3 +52,6 @@ To get started, please set up your **virtual environment**. Instructions can be 
 
 - [Logistic Regression](logistic_regression.md)
 - *(More examples coming soon)*
+
+<hr>
+<hr>
