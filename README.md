@@ -1,4 +1,4 @@
-# Machine Learning Practice Repo
+# Machine Learning Tutorials
 
 Welcome! This repository is a personal project to **demonstrate machine learning** and explore other useful tools in the data science and software development ecosystem.
 

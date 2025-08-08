@@ -1,4 +1,4 @@
-site_name: Training in Machine Learning (ML_train)
+site_name: Machine Learning Tutorials (ML_train)
 theme:
   name: material
   palette:
@@ -6,10 +6,20 @@ theme:
     primary: green
     accent: deep purple
 nav:
-  - Home: index.md
+  - Machine Learning Tutorials: index.md
   - Requirements: requirements.md
-  - Linear Regression: linear_regression.md
+  - Supervised Learning:
+    - Regression:
+      - Linear Regression: linear_regression.md
+    - Classification:
+      - Logistic Regression: logistic_regression.md
 markdown_extensions:
+  - toc:
+      permalink: true
+      toc_depth: 3
+  - admonition
+  - codehilite
+  - footnotes
   - pymdownx.arithmatex:
       generic: true
 extra_javascript:
