@@ -94,7 +94,7 @@ To explore this, navigate to the folder `./codes/` in the repository. Activate t
 
 Then, launch Jupyter Notebook:
 
-``` bash {linenums="1"}
+``` bash {linenums="1", title='console'}
 jupyter notebook
 ```
 
@@ -102,13 +102,13 @@ Open the notebook named `linear_regression.ipynb`, which contains `R` code. **Ma
 
 We begin by importing `datasets` package:
 
-```r {linenums="1"}
+```r {linenums="1", title='R'}
 library(datasets)
 ```
 
 This package includes several classic datasets, one of which is `USJudgeRatings`. This dataset contains average ratings for 43 judges across several dimensions (e.g., integrity, diligence, writing quality). The 12th column is the rating for “worthy of retention,” which we’ll try to predict using the first 11 features.
 
-```r {linenums="1"}
+```r {linenums="1", title='R'}
 dataset = USJudgeRatings
 head(dataset)
 ```
@@ -131,7 +131,7 @@ This command prints the first six rows of the dataset:
 
 To prepare the data and run linear regression:
 
-```r {linenums="1"}
+```r {linenums="1", title='R'}
 x <- as.matrix(dataset[, c(1:11)]) # First 11 dimensions are Features
 y <- as.matrix(dataset[, 12]) # last dimeions is the Output (Retention rating)
 reg <- lm(y ~ x)
@@ -142,39 +142,40 @@ This creates matrices `x` and `y` and uses the `lm` function to perform linear r
 
 To see the model summary:
 
-```r {linenums="1"}
+```r {linenums="1", title='R'}
 summary(reg)
 ```
 
 This produces several useful statistics:
+``` {title='Output'}
+Call:
+lm(formula = y ~ x)
 
-    Call:
-    lm(formula = y ~ x)
+Residuals:
+     Min       1Q   Median       3Q      Max
+-0.22123 -0.06155 -0.01055  0.05045  0.26079
 
-    Residuals:
-         Min       1Q   Median       3Q      Max
-    -0.22123 -0.06155 -0.01055  0.05045  0.26079
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)
+(Intercept) -2.11943    0.51904  -4.083 0.000290 ***
+xCONT        0.01280    0.02586   0.495 0.624272
+xINTG        0.36484    0.12936   2.820 0.008291 **
+xDMNR        0.12540    0.08971   1.398 0.172102
+xDILG        0.06669    0.14303   0.466 0.644293
+xCFMG       -0.19453    0.14779  -1.316 0.197735
+xDECI        0.27829    0.13826   2.013 0.052883 .
+xPREP       -0.00196    0.24001  -0.008 0.993536
+xFAMI       -0.13579    0.26725  -0.508 0.614972
+xORAL        0.54782    0.27725   1.976 0.057121 .
+xWRIT       -0.06806    0.31485  -0.216 0.830269
+xPHYS        0.26881    0.06213   4.326 0.000146 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
-    Coefficients:
-                Estimate Std. Error t value Pr(>|t|)
-    (Intercept) -2.11943    0.51904  -4.083 0.000290 ***
-    xCONT        0.01280    0.02586   0.495 0.624272
-    xINTG        0.36484    0.12936   2.820 0.008291 **
-    xDMNR        0.12540    0.08971   1.398 0.172102
-    xDILG        0.06669    0.14303   0.466 0.644293
-    xCFMG       -0.19453    0.14779  -1.316 0.197735
-    xDECI        0.27829    0.13826   2.013 0.052883 .
-    xPREP       -0.00196    0.24001  -0.008 0.993536
-    xFAMI       -0.13579    0.26725  -0.508 0.614972
-    xORAL        0.54782    0.27725   1.976 0.057121 .
-    xWRIT       -0.06806    0.31485  -0.216 0.830269
-    xPHYS        0.26881    0.06213   4.326 0.000146 ***
-    ---
-    Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-
-    Residual standard error: 0.1174 on 31 degrees of freedom
-    Multiple R-squared:  0.9916,	Adjusted R-squared:  0.9886
-    F-statistic: 332.9 on 11 and 31 DF,  p-value: < 2.2e-16
+Residual standard error: 0.1174 on 31 degrees of freedom
+Multiple R-squared:  0.9916,	Adjusted R-squared:  0.9886
+F-statistic: 332.9 on 11 and 31 DF,  p-value: < 2.2e-16
+```
 
 I don't know about you, but I think this is **mega**. However, we’ll take it a step further and write our own `Python` code — mostly from scratch — to calculate these statistics ourselves and better understand what they mean.
 
