@@ -8,13 +8,11 @@
       
       
       
-        <link rel="canonical" href="https://dgalvis.github.io/ML_train/requirements.html">
+        <link rel="canonical" href="https://dgalvis.github.io/ML_train/linear_regression.html">
       
       
-        <link rel="prev" href="index.html">
+        <link rel="prev" href="requirements.html">
       
-      
-        <link rel="next" href="linear_regression.html">
       
       
       <link rel="icon" href="assets/images/favicon.png">
@@ -22,7 +20,7 @@
     
     
       
-        <title>Requirements - Training in Machine Learning (ML_train)</title>
+        <title>Linear Regression - Training in Machine Learning (ML_train)</title>
       
     
     
@@ -71,11 +69,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#some-notes" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -108,7 +101,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Requirements
+              Linear Regression
             
           </span>
         </div>
@@ -247,6 +240,28 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="requirements.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Requirements
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -257,69 +272,7 @@
       
       
       
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Requirements
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="requirements.html" class="md-nav__link md-nav__link--active">
-        
-  
-  
-  <span class="md-ellipsis">
-    Requirements
-    
-  </span>
-  
-
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#some-notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      Some notes
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="linear_regression.html" class="md-nav__link">
+      <a href="linear_regression.html" class="md-nav__link md-nav__link--active">
         
   
   
@@ -330,6 +283,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -352,23 +306,6 @@
   
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#some-notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      Some notes
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -386,35 +323,9 @@
   
 
 
-  <h1>Requirements</h1>
+  <h1>Linear Regression</h1>
 
-<p>First off, I would recommend using a Conda virual environment:</p>
-<pre><code class="language-bash">conda create --name ML_train
-conda activate ML_train
-</code></pre>
-<pre><code class="language-bash">conda install -c conda-forge python ipython jupyterlab 
-conda install -c conda-forge scipy pandas numpy networkx scikit-learn
-conda install -c conda-forge nbconvert matplotlib seaborn plotly
-conda install -c conda-forge streamlit scikit-plot sqlite grip
-pip3 install torch torchvision torchaudio
-pip3 install mkdocs mkdocs-material
-pip3 install mkdocs-pymdownx-material-extras
-conda install -c conda-forge r-base r-essentials r-pacman r-psychtools r-lars
-</code></pre>
-<p>We probably don't need all of these packages, but this is the environment I'm working with. You can also try:</p>
-<pre><code class="language-bash">    conda env create -f requirements_mac.yml
-</code></pre>
-<p>using the requirements file in the main directory. I have typically found that this only works on the same OS though.</p>
-<h3 id="some-notes">Some notes</h3>
-<ul>
-<li><code>scikit-learn</code> and <code>torch</code> are for machine learning.</li>
-<li><code>sqlite</code> is used to manipulate SQL databases using SQL in Python. (Very useful data structures for industry).</li>
-<li><code>mkdocs</code> is a great package for making code documentation websites (Like this one!).</li>
-<li><code>nbconvert</code> converts Jupyter notebooks to .py files. </li>
-<li><code>matplotlib</code>, <code>seaborn</code>, <code>plotly</code> is for plotting and data visualisation, <code>streamlit</code> is for dashboards.</li>
-<li><code>r-base</code>, <code>r-essentials</code>, <code>r-pacman</code> will let us use <code>R</code>. <code>r-pacman</code> is a package manager that will automatically download required packages from CRAN. For deployment, it might be better to download packages using <code>conda</code>. This will work fine for us though.</li>
-<li><code>r-psychtools</code> has the package <code>psych</code> which contains useful functions like <code>describe()</code>. On my Mac, I needed to have XCode installed first for this to work.</li>
-</ul>
+
 
 
 
