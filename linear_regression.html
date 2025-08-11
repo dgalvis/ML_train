@@ -455,6 +455,30 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Example from Python">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-a-class-to-reproduce-the-r-statistics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using a class to reproduce the R statistics
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-linearregression-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      The LinearRegression class
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -632,6 +656,30 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Example from Python">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-a-class-to-reproduce-the-r-statistics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using a class to reproduce the R statistics
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-linearregression-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      The LinearRegression class
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -731,16 +779,16 @@ y_M
 <p>Then, launch Jupyter Notebook:</p>
 <div class="language-bash highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">console</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a>jupyter<span class="w"> </span>notebook
 </span></code></pre></div></td></tr></table></div>
-<p>Open the notebook named <code>linear_regression.ipynb</code>, which contains <code>R</code> code. <strong>Make sure you use the <code>R</code> kernel.</strong> </p>
+<p>Open the notebook named <code>linear_regression_R.ipynb</code>, which contains <code>R</code> code. <strong>Make sure you use the <code>R</code> kernel.</strong> </p>
 <p>We begin by importing <code>datasets</code> package:</p>
 <div class="language-r highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">R</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="nf">library</span><span class="p">(</span><span class="n">datasets</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
 <p>This package includes several classic datasets, one of which is <code>USJudgeRatings</code>. This dataset contains average ratings for 43 judges across several dimensions (e.g., integrity, diligence, writing quality). The 12th column is the rating for “worthy of retention,” which we’ll try to predict using the first 11 features.</p>
-<p><div class="language-r highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">R</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
+<p>This command prints the first six rows of the dataset:</p>
+<div class="language-r highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">R</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
 <span class="normal"><a href="#__codelineno-2-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="n">dataset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">USJudgeRatings</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="nf">head</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
-This command prints the first six rows of the dataset:</p>
 <table class="dataframe">
 <caption>US Judge Ratings</caption>
 <thead>
@@ -801,6 +849,71 @@ This command prints the first six rows of the dataset:</p>
 <hr>
 
 <h2 id="example-from-python">Example from Python<a class="headerlink" href="#example-from-python" title="Permanent link">&para;</a></h2>
+<h3 id="using-a-class-to-reproduce-the-r-statistics">Using a class to reproduce the <code>R</code> statistics<a class="headerlink" href="#using-a-class-to-reproduce-the-r-statistics" title="Permanent link">&para;</a></h3>
+<p>In this example, we will implement a <code>LinearRegression</code> class in Python that performs linear regression and reproduces the same statistics that the <code>R</code> <code>summary</code> function outputs.</p>
+<p>To explore this example, navigate to the folder <code>./codes/</code> in the repository.
+Activate the virtual environment we created earlier (see <a href="requirements.html">Requirements</a>).</p>
+<p>Launch Jupyter Notebook:</p>
+<div class="language-bash highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">console</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-6-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1"></a>jupyter<span class="w"> </span>notebook
+</span></code></pre></div></td></tr></table></div>
+<p>Open the notebook named <code>linear_regression_py.ipynb</code>, which contains <code>Python</code> code. <strong>Make sure you use the <code>Python 3</code> kernel.</strong> </p>
+<p>We start by importing <code>pandas</code> for data handling and the <code>LinearRegression</code> class from our module:</p>
+<div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Python</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-7-1">1</a></span>
+<span class="normal"><a href="#__codelineno-7-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">module.lin_reg</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearRegression</span> 
+</span></code></pre></div></td></tr></table></div>
+<p>The <code>pandas</code> library makes it easy to load tabular datasets, such as the <code>USJudgeRatings</code> data stored in a CSV file:</p>
+<div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Python</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-8-1">1</a></span>
+<span class="normal"><a href="#__codelineno-8-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;data/USJudgeRatings.csv&quot;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</span></code></pre></div></td></tr></table></div>
+<p>To prepare the data, we convert the <code>DataFrame</code> to NumPy arrays:</p>
+<div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Python</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-9-1">1</a></span>
+<span class="normal"><a href="#__codelineno-9-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="n">X</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()[:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span></code></pre></div></td></tr></table></div>
+<p>Then, we create the <code>LinearRegression</code> instance and fit the data:</p>
+<div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Python</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-10-1">1</a></span>
+<span class="normal"><a href="#__codelineno-10-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="n">model</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
+<p>To display the regression results, call the <code>summary()</code> method::</p>
+<div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Python</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-11-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="n">model</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+</span></code></pre></div></td></tr></table></div>
+<p>This produces the same statistics as the <code>R</code> summary:</p>
+<div class="language-text highlight"><span class="filename">Output</span><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>Residuals:
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>Min: -0.2212
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>Q1:  -0.0615
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>Med: -0.0105
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>Q3:  0.0505
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>Max: 0.2608
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a> Coefficient   Std Error     t-value     p-value
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>     -2.1194      0.5190     -4.0834   0.0002896
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>      0.0128      0.0259      0.4947      0.6243
+</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>      0.3648      0.1294      2.8204    0.008291
+</span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>      0.1254      0.0897      1.3978      0.1721
+</span><span id="__span-12-13"><a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a>      0.0667      0.1430      0.4663      0.6443
+</span><span id="__span-12-14"><a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a>     -0.1945      0.1478     -1.3163      0.1977
+</span><span id="__span-12-15"><a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a>      0.2783      0.1383      2.0129     0.05288
+</span><span id="__span-12-16"><a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a>     -0.0020      0.2400     -0.0082      0.9935
+</span><span id="__span-12-17"><a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a>     -0.1358      0.2672     -0.5081       0.615
+</span><span id="__span-12-18"><a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a>      0.5478      0.2772      1.9759     0.05712
+</span><span id="__span-12-19"><a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a>     -0.0681      0.3148     -0.2162      0.8303
+</span><span id="__span-12-20"><a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a>      0.2688      0.0621      4.3263   0.0001464
+</span><span id="__span-12-21"><a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a>
+</span><span id="__span-12-22"><a id="__codelineno-12-22" name="__codelineno-12-22" href="#__codelineno-12-22"></a>Residual standard error: 0.1174
+</span><span id="__span-12-23"><a id="__codelineno-12-23" name="__codelineno-12-23" href="#__codelineno-12-23"></a>R-squared:             0.9916
+</span><span id="__span-12-24"><a id="__codelineno-12-24" name="__codelineno-12-24" href="#__codelineno-12-24"></a>Adjusted R-squared:    0.9886
+</span><span id="__span-12-25"><a id="__codelineno-12-25" name="__codelineno-12-25" href="#__codelineno-12-25"></a>F-statistic:           332.8597
+</span><span id="__span-12-26"><a id="__codelineno-12-26" name="__codelineno-12-26" href="#__codelineno-12-26"></a>F-statistic p-value:   1.11e-16
+</span></code></pre></div>
+<p>Next, we will unpack the <code>LinearRegression</code> class to see how it works!</p>
+<hr>
+
+<h3 id="the-linearregression-class">The <code>LinearRegression</code> class<a class="headerlink" href="#the-linearregression-class" title="Permanent link">&para;</a></h3>
+<hr>
+<hr>
 
 
 
