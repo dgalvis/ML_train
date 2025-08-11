@@ -720,9 +720,6 @@ y_i = \beta_0 + \beta_1 x_{i,1} + \dots + \beta_N x_{i,N} + \epsilon_i,
 <li><span class="arithmatex">\( \beta_0 \)</span> — The intercept (bias).</li>
 <li><span class="arithmatex">\( \beta_j \)</span> — The coefficient for feature <span class="arithmatex">\( j \)</span>.</li>
 </ul>
-<blockquote>
-<p><em>Note:</em> We typically use <span class="arithmatex">\( \beta \)</span> for both the true model parameters and the estimated parameters. It's common to overload the symbol and rely on context, though you may also see <span class="arithmatex">\( \hat{\beta} \)</span> used for estimated values.</p>
-</blockquote>
 <hr />
 <h3 id="fitting-the-model-ordinary-least-squares-ols">Fitting the Model: Ordinary Least Squares (OLS)<a class="headerlink" href="#fitting-the-model-ordinary-least-squares-ols" title="Permanent link">&para;</a></h3>
 <p>The most common way to fit a linear regression model is with the <strong>ordinary least squares (OLS)</strong> method. The objective is to find parameters <span class="arithmatex">\( \boldsymbol{\beta} \)</span> that minimise the following cost function:</p>
@@ -875,7 +872,7 @@ Activate the virtual environment we created earlier (see <a href="requirements.h
 <p>Then, we create the <code>LinearRegression</code> instance and fit the data:</p>
 <div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Python</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-10-1">1</a></span>
 <span class="normal"><a href="#__codelineno-10-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="n">model</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="n">_</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
 <p>To display the regression results, call the <code>summary()</code> method::</p>
 <div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Python</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-11-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="n">model</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
@@ -912,8 +909,72 @@ Activate the virtual environment we created earlier (see <a href="requirements.h
 <hr>
 
 <h3 id="the-linearregression-class">The <code>LinearRegression</code> class<a class="headerlink" href="#the-linearregression-class" title="Permanent link">&para;</a></h3>
+<p>All Python source code for this example is stored in the folder <code>./codes/modules/</code>.</p>
+<ul>
+<li>The file <code>__init__.py</code> marks the directory as a <strong>Python package</strong>, allowing you to import its modules elsewhere in your project.</li>
+<li>The file <code>lin_reg.py</code> defines the <code>LinearRegression</code> <strong>class</strong>, which implements our regression model and associated methods.</li>
+<li>The file <code>test_lin_reg.py</code> contains <strong>unit tests</strong> to verify that the implementation in <code>lin_reg.py</code> works correctly<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>.</li>
+</ul>
+<p>Every <code>Python</code> class can define an <strong>initialiser method</strong> (often called the <em>constructor</em> in other languages) using <code>__init__</code>.
+This special method is automatically executed when a new instance of the class is created<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>.</p>
+<div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Python</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-13-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-13-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-13-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-13-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-13-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-13-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-13-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-13-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-13-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-13-10">10</a></span>
+<span class="normal"><a href="#__codelineno-13-11">11</a></span>
+<span class="normal"><a href="#__codelineno-13-12">12</a></span>
+<span class="normal"><a href="#__codelineno-13-13">13</a></span>
+<span class="normal"><a href="#__codelineno-13-14">14</a></span>
+<span class="normal"><a href="#__codelineno-13-15">15</a></span>
+<span class="normal"><a href="#__codelineno-13-16">16</a></span>
+<span class="normal"><a href="#__codelineno-13-17">17</a></span>
+<span class="normal"><a href="#__codelineno-13-18">18</a></span>
+<span class="normal"><a href="#__codelineno-13-19">19</a></span>
+<span class="normal"><a href="#__codelineno-13-20">20</a></span>
+<span class="normal"><a href="#__codelineno-13-21">21</a></span>
+<span class="normal"><a href="#__codelineno-13-22">22</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">LinearRegression</span><span class="p">:</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3"></a><span class="sd">    Ordinary Least Squares (OLS) linear regression using the normal equation.</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4"></a><span class="sd">    For full details, see the complete class docstring in `lin_reg.py`</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5"></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6"></a>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">add_bias</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9"></a><span class="sd">        Initializes the model.</span>
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10"></a>
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11"></a><span class="sd">        Parameters</span>
+</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12"></a><span class="sd">        ----------</span>
+</span><span id="__span-13-13"><a id="__codelineno-13-13" name="__codelineno-13-13"></a><span class="sd">        add_bias : bool, optional (default=True)</span>
+</span><span id="__span-13-14"><a id="__codelineno-13-14" name="__codelineno-13-14"></a><span class="sd">            If True, automatically adds a column of ones to X to estimate</span>
+</span><span id="__span-13-15"><a id="__codelineno-13-15" name="__codelineno-13-15"></a><span class="sd">            an intercept term (β₀). If False, the model is fit without an</span>
+</span><span id="__span-13-16"><a id="__codelineno-13-16" name="__codelineno-13-16"></a><span class="sd">            intercept (β₀ fixed at 0).</span>
+</span><span id="__span-13-17"><a id="__codelineno-13-17" name="__codelineno-13-17"></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="__span-13-18"><a id="__codelineno-13-18" name="__codelineno-13-18"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">add_bias</span> <span class="o">=</span> <span class="n">add_bias</span> <span class="c1"># Instance attribute: model configuration</span>
+</span><span id="__span-13-19"><a id="__codelineno-13-19" name="__codelineno-13-19"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Instance attribute: will store the estimated coefficients after fitting</span>
+</span><span id="__span-13-20"><a id="__codelineno-13-20" name="__codelineno-13-20"></a>
+</span><span id="__span-13-21"><a id="__codelineno-13-21" name="__codelineno-13-21"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># Instance attribute: will store the independent variables of the training set</span>
+</span><span id="__span-13-22"><a id="__codelineno-13-22" name="__codelineno-13-22"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># Instance attribute: will store the dependent variable of the training set</span>
+</span></code></pre></div></td></tr></table></div>
 <hr>
 <hr>
+
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>Testing is beyond the scope of this tutorial, but it is an essential skill in software development. Automated tests help ensure that your code produces the expected results, prevent regressions when you make changes, and improve confidence in the correctness of your program.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>In general, I will reduce the docstrings for presentation here. You can gain additional context by looking through the docstrings in <code>lin_reg.py</code>.&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
 
 
 
