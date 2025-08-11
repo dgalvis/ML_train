@@ -202,7 +202,7 @@ We start by importing `pandas` for data handling and the `LinearRegression` clas
 
 ``` python {linenums="1", title='Python'}
 import pandas as pd
-from module.lin_reg import LinearRegression 
+from modules.lin_reg import LinearRegression 
 ```
 
 The `pandas` library makes it easy to load tabular datasets, such as the `USJudgeRatings` data stored in a CSV file:
