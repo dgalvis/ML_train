@@ -22,4 +22,4 @@ jobs:
       shell: bash -l {0}
       run: |
         cd codes
-        python -m modules.testLinReg
+        python -m modules.test_lin_reg

@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 import pandas as pd
-from modules.LinReg import LinearRegression  
+from modules.lin_reg import LinearRegression  
 
 class TestLinearRegressionPerfect(unittest.TestCase):
     def setUp(self):

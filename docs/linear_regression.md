@@ -98,7 +98,7 @@ Then, launch Jupyter Notebook:
 jupyter notebook
 ```
 
-Open the notebook named `linear_regression.ipynb`, which contains `R` code. **Make sure you use the `R` kernel.** 
+Open the notebook named `linear_regression_R.ipynb`, which contains `R` code. **Make sure you use the `R` kernel.** 
 
 We begin by importing `datasets` package:
 
@@ -108,11 +108,12 @@ library(datasets)
 
 This package includes several classic datasets, one of which is `USJudgeRatings`. This dataset contains average ratings for 43 judges across several dimensions (e.g., integrity, diligence, writing quality). The 12th column is the rating for “worthy of retention,” which we’ll try to predict using the first 11 features.
 
+This command prints the first six rows of the dataset:
+
 ```r {linenums="1", title='R'}
 dataset = USJudgeRatings
 head(dataset)
 ```
-This command prints the first six rows of the dataset:
 
 <table class="dataframe">
 <caption>US Judge Ratings</caption>
@@ -184,3 +185,91 @@ I don't know about you, but I think this is **mega**. However, we’ll take it a
 
 ## Example from Python
 
+### Using a class to reproduce the `R` statistics
+
+In this example, we will implement a `LinearRegression` class in Python that performs linear regression and reproduces the same statistics that the `R` `summary` function outputs.
+
+To explore this example, navigate to the folder `./codes/` in the repository.
+Activate the virtual environment we created earlier (see [Requirements](requirements.md)).
+
+Launch Jupyter Notebook:
+
+``` bash {linenums="1", title='console'}
+jupyter notebook
+```
+
+Open the notebook named `linear_regression_py.ipynb`, which contains `Python` code. **Make sure you use the `Python 3` kernel.** 
+
+We start by importing `pandas` for data handling and the `LinearRegression` class from our module:
+
+``` python {linenums="1", title='Python'}
+import pandas as pd
+from module.lin_reg import LinearRegression 
+```
+
+The `pandas` library makes it easy to load tabular datasets, such as the `USJudgeRatings` data stored in a CSV file:
+
+``` python {linenums="1", title='Python'}
+df = pd.read_csv("data/USJudgeRatings.csv", index_col=0)
+print(df.head())
+```
+
+To prepare the data, we convert the `DataFrame` to NumPy arrays:
+
+``` python {linenums="1", title='Python'}
+X = df.to_numpy()[:, :-1]
+y = df.to_numpy()[:, -1]
+```
+
+Then, we create the `LinearRegression` instance and fit the data:
+
+``` python {linenums="1", title='Python'}
+model = LinearRegression()
+model.fit(X,y)
+```
+
+To display the regression results, call the `summary()` method::
+
+``` python {linenums="1", title='Python'}
+model.summary()
+```
+
+This produces the same statistics as the `R` summary:
+
+``` {title="Output"}
+Residuals:
+Min: -0.2212
+Q1:  -0.0615
+Med: -0.0105
+Q3:  0.0505
+Max: 0.2608
+
+ Coefficient   Std Error     t-value     p-value
+     -2.1194      0.5190     -4.0834   0.0002896
+      0.0128      0.0259      0.4947      0.6243
+      0.3648      0.1294      2.8204    0.008291
+      0.1254      0.0897      1.3978      0.1721
+      0.0667      0.1430      0.4663      0.6443
+     -0.1945      0.1478     -1.3163      0.1977
+      0.2783      0.1383      2.0129     0.05288
+     -0.0020      0.2400     -0.0082      0.9935
+     -0.1358      0.2672     -0.5081       0.615
+      0.5478      0.2772      1.9759     0.05712
+     -0.0681      0.3148     -0.2162      0.8303
+      0.2688      0.0621      4.3263   0.0001464
+
+Residual standard error: 0.1174
+R-squared:             0.9916
+Adjusted R-squared:    0.9886
+F-statistic:           332.8597
+F-statistic p-value:   1.11e-16
+```
+
+Next, we will unpack the `LinearRegression` class to see how it works!
+
+<hr>
+
+### The `LinearRegression` class
+
+<hr>
+<hr>
