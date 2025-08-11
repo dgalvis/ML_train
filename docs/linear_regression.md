@@ -22,8 +22,6 @@ The components of the model are:
 - \( \beta_0 \) — The intercept (bias).
 - \( \beta_j \) — The coefficient for feature \( j \).
 
-> *Note:* We typically use \( \beta \) for both the true model parameters and the estimated parameters. It's common to overload the symbol and rely on context, though you may also see \( \hat{\beta} \) used for estimated values.
-
 ---
 
 ### Fitting the Model: Ordinary Least Squares (OLS)
@@ -225,7 +223,7 @@ Then, we create the `LinearRegression` instance and fit the data:
 
 ``` python {linenums="1", title='Python'}
 model = LinearRegression()
-model.fit(X,y)
+_ = model.fit(X,y)
 ```
 
 To display the regression results, call the `summary()` method::
@@ -270,6 +268,44 @@ Next, we will unpack the `LinearRegression` class to see how it works!
 <hr>
 
 ### The `LinearRegression` class
+
+All Python source code for this example is stored in the folder `./codes/modules/`.
+
+- The file `__init__.py` marks the directory as a **Python package**, allowing you to import its modules elsewhere in your project.
+- The file `lin_reg.py` defines the `LinearRegression` **class**, which implements our regression model and associated methods.
+- The file `test_lin_reg.py` contains **unit tests** to verify that the implementation in `lin_reg.py` works correctly[^1].
+
+[^1]: Testing is beyond the scope of this tutorial, but it is an essential skill in software development. Automated tests help ensure that your code produces the expected results, prevent regressions when you make changes, and improve confidence in the correctness of your program.
+
+Every `Python` class can define an **initialiser method** (often called the *constructor* in other languages) using `__init__`.
+This special method is automatically executed when a new instance of the class is created[^2].
+
+[^2]: In general, I will reduce the docstrings for presentation here. You can gain additional context by looking through the docstrings in `lin_reg.py`.
+
+``` python {linenums="1", title='Python'}
+class LinearRegression:
+    """
+    Ordinary Least Squares (OLS) linear regression using the normal equation.
+    For full details, see the complete class docstring in `lin_reg.py`
+    """
+
+    def __init__(self, add_bias: bool = True):
+        """
+        Initializes the model.
+
+        Parameters
+        ----------
+        add_bias : bool, optional (default=True)
+            If True, automatically adds a column of ones to X to estimate
+            an intercept term (β₀). If False, the model is fit without an
+            intercept (β₀ fixed at 0).
+        """
+        self.add_bias = add_bias # Instance attribute: model configuration
+        self.beta = None  # Instance attribute: will store the estimated coefficients after fitting
+        
+        self.X = None # Instance attribute: will store the independent variables of the training set
+        self.y = None # Instance attribute: will store the dependent variable of the training set
+```
 
 <hr>
 <hr>

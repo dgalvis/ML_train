@@ -1,11 +1,52 @@
 import numpy as np
 from scipy import stats
 from typing import Tuple
+
 class LinearRegression:
     """
-    A simple linear regression model using the normal equation.
-    """
+    Ordinary Least Squares (OLS) linear regression using the normal equation.
 
+    This implementation estimates regression coefficients by solving the closed-form
+    OLS solution:
+
+        β = (Xᵀ X)⁻¹ Xᵀ y
+
+    It reproduces key summary statistics found in R's `summary.lm()` output,
+    including:
+    - Residual quartiles summary
+    - Estimated coefficients and standard errors
+    - t-statistics and p-values for coefficients
+    - Residual standard error (RSE)
+    - R² and adjusted R²
+    - F-statistic and corresponding p-value
+
+    Parameters
+    ----------
+    add_bias : bool, default=True
+        If True, automatically adds a column of ones to X to estimate
+        an intercept term (β₀). If False, the model is fit without an
+        intercept (β₀ fixed at 0).
+
+    Attributes
+    ----------
+    add_bias : bool
+        Whether the intercept term is included in the model.
+    beta : np.ndarray or None
+        Estimated regression coefficients after fitting. If `add_bias` is True,
+        the first element corresponds to the intercept.
+    X : np.ndarray
+        Design matrix used to fit the model (including bias column if applicable).
+    y : np.ndarray
+        Target vector used to fit the model.
+
+    Notes
+    -----
+    - The model uses the pseudoinverse to handle potentially singular
+      `Xᵀ X` matrices.
+    - Assumes that the relationship between predictors and target is
+      linear, and that residuals are approximately normally distributed
+      with constant variance.
+    """
     def __init__(self, add_bias: bool = True):
         """
         Initializes the model.
@@ -13,10 +54,15 @@ class LinearRegression:
         Parameters
         ----------
         add_bias : bool, optional (default=True)
-            Whether to automatically add a bias (intercept) column to X.
+            If True, automatically adds a column of ones to X to estimate
+            an intercept term (β₀). If False, the model is fit without an
+            intercept (β₀ fixed at 0).
         """
-        self.add_bias = add_bias
-        self.beta = None  # Will hold the estimated coefficients after fitting
+        self.add_bias = add_bias # Instance attribute: model configuration
+        self.beta = None  # Instance attribute: will store the estimated coefficients after fitting
+        
+        self.X = None # Instance attribute: will store the independent variables of the training set
+        self.y = None # Instance attribute: will store the dependent variable of the training set
 
     def fit(self, X: np.ndarray[float], y: np.ndarray[float]) -> np.ndarray[float]:
         """
