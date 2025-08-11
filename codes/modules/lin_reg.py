@@ -1,6 +1,7 @@
 import numpy as np
 from scipy import stats
 from typing import Tuple
+from numpy.typing import NDArray
 
 class LinearRegression:
     """
@@ -13,13 +14,13 @@ class LinearRegression:
 
     It reproduces key summary statistics found in R's `summary.lm()` output,
     including:
-    - Residual quartiles summary
     - Estimated coefficients and standard errors
     - t-statistics and p-values for coefficients
     - Residual standard error (RSE)
     - R² and adjusted R²
     - F-statistic and corresponding p-value
-
+    - Residual quartiles summary
+    
     Parameters
     ----------
     add_bias : bool, default=True
@@ -29,7 +30,7 @@ class LinearRegression:
 
     Attributes
     ----------
-    add_bias : bool
+    _add_bias : bool
         Whether the intercept term is included in the model.
     beta : np.ndarray or None
         Estimated regression coefficients after fitting. If `add_bias` is True,
@@ -58,13 +59,13 @@ class LinearRegression:
             an intercept term (β₀). If False, the model is fit without an
             intercept (β₀ fixed at 0).
         """
-        self.add_bias = add_bias # Instance attribute: model configuration
+        self._add_bias = add_bias # Instance attribute: model configuration
         self.beta = None  # Instance attribute: will store the estimated coefficients after fitting
         
         self.X = None # Instance attribute: will store the independent variables of the training set
         self.y = None # Instance attribute: will store the dependent variable of the training set
 
-    def fit(self, X: np.ndarray[float], y: np.ndarray[float]) -> np.ndarray[float]:
+    def fit(self, X: NDArray[np.float64], y: NDArray[np.float64]) -> NDArray[np.float64]:
         """
         Fits the linear regression model using the normal equation.
 
@@ -83,7 +84,7 @@ class LinearRegression:
         beta : np.ndarray
             The estimated regression coefficients. If `add_bias` is True, the first element is the intercept.
         """
-        if self.add_bias:
+        if self._add_bias:
             # Add a column of ones to account for the intercept term
             ones = np.ones((X.shape[0], 1))
             X = np.hstack((ones, X))
@@ -100,7 +101,7 @@ class LinearRegression:
 
         return self.beta
 
-    def predict(self, X: np.ndarray[float]) -> np.ndarray[float]:
+    def predict(self, X: NDArray[np.float64]) -> NDArray[np.float64]:
         """
         Generates predictions using the fitted linear model.
 
@@ -114,7 +115,10 @@ class LinearRegression:
         y_pred : np.ndarray
             Predicted target values of shape (n_samples,).
         """
-        if self.add_bias:
+        if self.beta is None:
+            raise ValueError("Model has not been fitted yet.")
+            
+        if self._add_bias:
             # Add a column of ones to account for the intercept
             ones = np.ones((X.shape[0], 1))
             X = np.hstack((ones, X))
@@ -123,7 +127,7 @@ class LinearRegression:
         y_pred = self._predict(X)
         return y_pred
 
-    def _predict(self, X: np.ndarray[float]) -> np.ndarray[float]:
+    def _predict(self, X: NDArray[np.float64]) -> NDArray[np.float64]:
         """
         Internal method to perform matrix multiplication to compute predictions from the design matrix and fitted coefficients.
 
@@ -137,14 +141,11 @@ class LinearRegression:
         y_pred : np.ndarray
             Predicted target values of shape (n_samples,).
         """
-        if self.beta is None:
-            raise ValueError("Model has not been fitted yet.")
-
         # Compute predictions as X @ beta
         y_pred = X @ self.beta
         return y_pred
 
-    def residuals(self, X: np.ndarray[float], y: np.ndarray[float]) -> np.ndarray[float]:
+    def residuals(self, X: NDArray[np.float64], y: NDArray[np.float64]) -> NDArray[np.float64]:
         """
         Computes residuals between observed and predicted values.
 
@@ -160,16 +161,19 @@ class LinearRegression:
         residuals : np.ndarray
             The difference y - y_pred, of shape (n_samples,).
         """
-        if self.add_bias:
+        if self.beta is None:
+            raise ValueError("Model has not been fitted yet.")
+        
+        if self._add_bias:
             # Add bias column if needed
             ones = np.ones((X.shape[0], 1))
             X = np.hstack((ones, X))       
 
         # Predict values and return residuals
-        y_pred = self._predict(X)
-        return y - y_pred
+        y_diff = self._residuals(X, y)
+        return y_diff
 
-    def _residuals(self, X: np.ndarray[float], y: np.ndarray[float]) -> np.ndarray[float]:
+    def _residuals(self, X: NDArray[np.float64], y: NDArray[np.float64]) -> NDArray[np.float64]:
         """
         Internal method to compute residuals from already-prepared data.
 
@@ -188,33 +192,7 @@ class LinearRegression:
         y_pred = self._predict(X)
         return y - y_pred
 
-    def residuals_SE(self) -> float:
-        """
-        Computes the Residual Standard Error (RSE) for the fitted model.
-
-        Uses the formula:
-            RSE = sqrt(RSS / (n - p))
-        where RSS is the residual sum of squares, n is the number of samples, and p is the number of parameters.
-
-        Returns
-        -------
-        float
-            The residual standard error.
-        """
-        # Compute residuals using stored data
-        residuals = self._residuals(self.X, self.y)
-
-        # Number of observations and parameters
-        n = len(residuals)
-        p = len(self.beta)
-
-        # Compute residual sum of squares and standard error
-        RSS = np.sum(residuals ** 2)
-        RSE = np.sqrt(RSS / (n - p))
-        
-        return RSE
-
-    def coefficients_SE(self) -> np.ndarray[float]:
+    def coefficients_SE(self) -> NDArray[np.float64]:
         """
         Computes the standard error for each regression coefficient.
 
@@ -225,6 +203,9 @@ class LinearRegression:
         np.ndarray
             Standard errors for each estimated coefficient (same shape as beta).
         """
+        if self.beta is None:
+            raise ValueError("Model has not been fitted yet.")
+            
         # Compute residuals from stored data
         residuals = self._residuals(self.X, self.y)
 
@@ -245,7 +226,7 @@ class LinearRegression:
 
         return coeff_RSE
 
-    def coefficients_p_values(self) -> Tuple[np.ndarray[float], np.ndarray[float]]:
+    def coefficients_p_values(self) -> Tuple[NDArray[np.float64], NDArray[np.float64]]:
         """
         Computes the t-statistics and two-sided p-values for each coefficient
         in the fitted linear regression model.
@@ -264,6 +245,9 @@ class LinearRegression:
             The two-sided p-values for each coefficient, indicating the probability
             of observing such an extreme t-value under the null hypothesis.
         """
+        if self.beta is None:
+            raise ValueError("Model has not been fitted yet.")
+
         # Compute t-statistics: each beta divided by its standard error
         t_values = self.beta / self.coefficients_SE()
     
@@ -276,6 +260,36 @@ class LinearRegression:
     
         return t_values, p_values
 
+    def residuals_SE(self) -> float:
+        """
+        Computes the Residual Standard Error (RSE) for the fitted model.
+
+        Uses the formula:
+            RSE = sqrt(RSS / (n - p))
+        where RSS is the residual sum of squares, n is the number of samples, and p is the number of parameters.
+
+        Returns
+        -------
+        float
+            The residual standard error.
+        """
+        if self.beta is None:
+            raise ValueError("Model has not been fitted yet.")
+        
+        # Compute residuals using stored data
+        residuals = self._residuals(self.X, self.y)
+
+        # Number of observations and parameters
+        n = len(residuals)
+        p = len(self.beta)
+
+        # Compute residual sum of squares and standard error
+        RSS = np.sum(residuals ** 2)
+        RSE = np.sqrt(RSS / (n - p))
+        
+        return RSE
+
+    
     def R_squared(self) -> Tuple[float, float]:
         """
         Computes the R-squared and adjusted R-squared values for the fitted model.
@@ -291,6 +305,9 @@ class LinearRegression:
         R_squared_adj : float
             The adjusted R², which adjusts for the number of predictors in the model.
         """
+        if self.beta is None:
+            raise ValueError("Model has not been fitted yet.")
+        
         # Compute residuals using stored training data
         residuals = self._residuals(self.X, self.y)
     
@@ -327,6 +344,9 @@ class LinearRegression:
         p_value : float
             The p-value corresponding to the F-statistic under the null hypothesis.
         """
+        if self.beta is None:
+            raise ValueError("Model has not been fitted yet.")
+            
         # Compute residuals using stored training data
         residuals = self._residuals(self.X, self.y)
     
@@ -341,7 +361,7 @@ class LinearRegression:
         TSS = np.sum((self.y - np.mean(self.y)) ** 2)
     
         # Degrees of freedom
-        if self.add_bias:
+        if self._add_bias:
             df1 = p - 1            # Numerator degrees of freedom (model)
         else:
             df1 = p
@@ -372,6 +392,9 @@ class LinearRegression:
             A 1D NumPy array containing the summary statistics in the following order:
             [min, 25th percentile (Q1), median, 75th percentile (Q3), max]
         """
+        if self.beta is None:
+            raise ValueError("Model has not been fitted yet.")
+            
         # Compute residuals using stored training data
         residuals = self._residuals(self.X, self.y)
     
@@ -393,6 +416,9 @@ class LinearRegression:
         - R-squared and adjusted R-squared
         - F-statistic and corresponding p-value
         """
+        if self.beta is None:
+            raise ValueError("Model has not been fitted yet.")
+        
         # Get residual summary statistics
         quartiles = self.residual_stats()
         print('Residuals:')
