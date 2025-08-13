@@ -1,4 +1,4 @@
-name: Run Unit Tests 
+name: Run Unit Tests
 
 on: [push, pull_request]
 
@@ -6,7 +6,6 @@ jobs:
   test:
     runs-on: macos-latest
 
-    # Ensure conda activation works in every `run:` step
     defaults:
       run:
         shell: bash -el {0}
@@ -15,49 +14,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Cache downloaded Conda packages (tarballs) to speed up (re)installs
-      - name: Cache Conda package downloads
-        uses: actions/cache@v4
+      # Micromamba sets up fast, and these two flags cache both env and downloads
+      - name: Set up Micromamba + cache env
+        uses: mamba-org/setup-micromamba@v1
         with:
-          path: ~/conda_pkgs_dir
-          key: ${{ runner.os }}-conda-pkgs-${{ hashFiles('requirements_test.yml') }}
+          environment-file: requirements_test.yml          # your existing env file
+          activate-environment: ML_train_test              # auto-activate for subsequent steps
+          cache-environment: true                          # cache the fully built env
+          cache-downloads: true                            # cache pkgs (nice-to-have)
+          micromamba-version: latest                       # default is fine
+          init-shell: bash                                 # so activation works with bash -el
 
-      # Install Miniconda (no env-file here; we want to restore a cached env if available)
-      - name: Set up Miniconda
-        uses: conda-incubator/setup-miniconda@v3
-        with:
-          auto-activate-base: false
-          python-version: "3.12.11"
-
-      # Capture the exact Python MAJOR.MINOR to include in the env cache key
-      - name: Get Python version
-        id: py
+      - name: Run tests
         run: |
-          ver=$(python -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
-          echo "ver=$ver" >> $GITHUB_OUTPUT
-
-      # Cache the fully built env directory so we can skip solving/installing on hits
-      - name: Cache Conda environment (ML_train_test)
-        id: env-cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.CONDA }}/envs
-          # Separate caches by OS, CPU arch, Python MAJOR.MINOR, and env file contents
-          key: conda-env-${{ runner.os }}-${{ runner.arch }}-py${{ steps.py.outputs.ver }}-${{ hashFiles('requirements_test.yml') }}
-
-      # Only build/update the env if the env cache missed
-      - name: Create/Update environment (cache miss only)
-        if: steps.env-cache.outputs.cache-hit != 'true'
-        run: |
-          if conda env list | grep -qE '^[^#]*\bML_train_test\b'; then
-            conda env update -n ML_train_test -f requirements_test.yml
-          else
-            conda env create -n ML_train_test -f requirements_test.yml
-          fi
-
-      - name: Activate env and run tests
-        run: |
-          conda activate ML_train_test
           cd codes
           python -m modules.test_lin_reg
 
