@@ -1,1 +1,1 @@
-*Example Coming Soon.*
+*Example Coming Soon...*
