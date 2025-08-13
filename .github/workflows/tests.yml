@@ -6,27 +6,22 @@ jobs:
   test:
     runs-on: macos-latest
 
-    defaults:
-      run:
-        shell: bash -el {0}
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Micromamba sets up fast, and these two flags cache both env and downloads
-      - name: Set up Micromamba + cache env
+      # Tiny installer + built-in caching for both the env and package downloads
+      - name: Set up Micromamba (with caching)
         uses: mamba-org/setup-micromamba@v1
         with:
-          environment-file: requirements_test.yml          # your existing env file
-          activate-environment: ML_train_test              # auto-activate for subsequent steps
-          cache-environment: true                          # cache the fully built env
-          cache-downloads: true                            # cache pkgs (nice-to-have)
-          micromamba-version: latest                       # default is fine
-          init-shell: bash                                 # so activation works with bash -el
+          environment-file: requirements_test.yml   # your existing conda env file
+          environment-name: ML_train_test          # name of the env to create/use
+          cache-environment: true                  # cache the fully-built env
+          cache-downloads: true                    # cache package downloads
+          init-shell: bash                         # optional, but fine to keep
 
       - name: Run tests
         run: |
           cd codes
-          python -m modules.test_lin_reg
+          micromamba run -n ML_train_test python -m modules.test_lin_reg
 
