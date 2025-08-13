@@ -1,4 +1,4 @@
-name: Run Unit Tests (Conda)
+name: Run Unit Tests
 
 on: [push, pull_request]
 
@@ -7,19 +7,21 @@ jobs:
     runs-on: macos-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Miniconda
-      uses: conda-incubator/setup-miniconda@v3
-      with:
-        activate-environment: ML_train_test
-        environment-file: requirements_test.yml
-        auto-activate-base: false
-        python-version: "3.12.11"
+      # Tiny installer + built-in caching for both the env and package downloads
+      - name: Set up Micromamba (with caching)
+        uses: mamba-org/setup-micromamba@v1
+        with:
+          environment-file: requirements_test.yml   # your existing conda env file
+          environment-name: ML_train_test          # name of the env to create/use
+          cache-environment: true                  # cache the fully-built env
+          cache-downloads: true                    # cache package downloads
+          init-shell: bash                         # optional, but fine to keep
 
-    - name: Run tests
-      shell: bash -l {0}
-      run: |
-        cd codes
-        python -m modules.test_lin_reg
+      - name: Run tests
+        run: |
+          cd codes
+          micromamba run -n ML_train_test python -m modules.test_lin_reg
+
