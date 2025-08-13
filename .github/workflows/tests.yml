@@ -32,7 +32,9 @@ jobs:
       # Capture the exact Python MAJOR.MINOR to include in the env cache key
       - name: Get Python version
         id: py
-        run: echo "ver=$(python -c 'import sys;print(f\"{sys.version_info.major}.{sys.version_info.minor}\")')" >> $GITHUB_OUTPUT
+        run: |
+          ver=$(python -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
+          echo "ver=$ver" >> $GITHUB_OUTPUT
 
       # Cache the fully built env directory so we can skip solving/installing on hits
       - name: Cache Conda environment (ML_train_test)
