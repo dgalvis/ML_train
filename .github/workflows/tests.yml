@@ -27,7 +27,6 @@ jobs:
         uses: conda-incubator/setup-miniconda@v3
         with:
           auto-activate-base: false
-          use-only-tar-bz2: true
           python-version: "3.12.11"
 
       # Capture the exact Python MAJOR.MINOR to include in the env cache key
