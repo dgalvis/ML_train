@@ -82,4 +82,3 @@ main = do
 
   putStrLn "x y pred"
   mapM_ print rows
-

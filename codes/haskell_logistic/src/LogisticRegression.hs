@@ -21,28 +21,60 @@ Notes:
 * This implementation uses full-batch gradients (no mini-batching).
 -}
 
-module LogisticRegression (numFeatures, addIntercept, predict, logLoss, initBeta, trainGD, to01, gradient, gdStep) where
+-- module LogisticRegression (numFeatures, addIntercept, predict, logLoss, initBeta, trainGD, to01, gradient, gdStep) where
+module LogisticRegression  where
 
 import Data.List (transpose)
 import System.Random (randomRIO)
 
--- | Infer the number of features (columns) from a design matrix.
+-- | Infer the number of features (columns) from an input matrix.
 --
---   Returns @0@ for an empty matrix.
+--   __Input__
 --
+--   * [[a]] : assumption is that all rows have the same number of elements
+--   * Returns @0@ for an empty matrix of [] or [[]]
+--
+--   __Returns__
+--
+--   * Int:  the number of columns (i.e., length of each row)
+--
+--   __Example__
+--  
 --   >>> numFeatures [[1,2,3],[4,5,6]]
 --   3
 numFeatures :: [[a]] -> Int
 numFeatures []    = 0
+numFeatures [[]]    = 0
 numFeatures (r:_) = length r
 
 -- | Dot product of two vectors.
 --
---   Assumption that both vectors have the same length.
+--  __Input__
+--
+--   * [Double], [Double] : two vectors, assumption is that both vectors have the same length.
+--
+--   __Returns__
+--
+--   * Double: dot product of two vectors
+--
+--   __Example__
+--  
+--   >>> dot [1,2,3] [4,5,6]
+--   32.0 
 dot :: [Double] -> [Double] -> Double
 dot u v = sum (zipWith (*) u v)
 
--- | Logistic sigmoid function @\\sigma(z) = 1 / (1 + e^{-z})@.
+-- | Logistic sigmoid function 
+--
+--   __Input__
+--
+--   * Double : some number z
+--
+--   __Returns__
+--
+--   * Double :  1 / (1 + e^{-z})
+--
+--   __Example__
 --
 --   >>> sigmoid 0
 --   0.5
