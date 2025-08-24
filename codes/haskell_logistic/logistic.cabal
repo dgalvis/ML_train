@@ -3,13 +3,25 @@ name:                logistic
 version:             0.1.0.0
 build-type:          Simple
 
+library
+  hs-source-dirs:      src
+  exposed-modules:     DataLoader,
+                       LogisticRegression,
+                       Main
+  default-language:    Haskell2010
+  build-depends:       base >= 4.7 && < 5,
+                       random,
+                       split
+
 executable logistic
   hs-source-dirs:      src
   main-is:             Main.hs
-  other-modules:       DataLoader
+  other-modules:       DataLoader,
+                       LogisticRegression
   default-language:    Haskell2010
   build-depends:       base >= 4.7 && < 5,
-                       random
+                       random,
+                       split
   ghc-options:         -Wall
                        -Wcompat
                        -Widentities
