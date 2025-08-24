@@ -1,20 +1,12 @@
 {-|
 Module      : DataLoader
-Description : Simple CSV-like loader and feature/target splitter.
+Description : Simple whitepace-delimited CSV loader. Splits features and target.
 
 This module provides:
 
 * 'loadCSV' — reads a whitespace-delimited text file into a list of rows of 'Double's.
 * 'splitXY' — splits each row into features (all but last column) and targets (last column).
 
-__Caution__:
-
-* The loader currently splits on a single space character (" "), not on commas.
-  Update the delimiter if your data uses a different separator.
-* No validation is performed; malformed lines will raise a runtime error via 'read'.
-* The loader expects the csv file to contain n+1 columns (where n is the number of regressors).
-  The final column is the output with y in {0, 1}.
-  There has to be at least one row and every row must have the same length.
 -}
 module DataLoader (loadCSV, splitXY) where
 
@@ -25,6 +17,14 @@ import Data.List.Split (splitOn)
 --   * Each line becomes one row.
 --   * Columns are split using a single space character (" ").
 --   * Every field must parse as 'Double' (@read@ is used directly).
+--
+-- __Caution__:
+--
+-- * The loader currently splits on a single space character (" "), not on commas.
+--   Update the delimiter if your data uses a different separator.
+-- * The loader expects the csv file to contain n+1 columns (where n is the number of regressors).
+-- *  The final column is the output with y in {0, 1}.
+-- *  There has to be at least one row and every row must have the same length.
 loadCSV :: FilePath -> IO [[Double]]
 loadCSV fp = do
   contents <- readFile fp
@@ -33,10 +33,11 @@ loadCSV fp = do
       nums = map (map read) cols :: [[Double]] -- parse fields to Doubles
   return nums
 
--- | Split a matrix into features @Xs@ and targets @ys@ by row.
+-- | Split a matrix into features @X@ and targets @y@ by row.
 --
---   For each row, all but the last element are treated as features, and
---   the last element is treated as the target.
+--   * The input is expected to contain n+1 columns (first n regressors).
+--   *  The final column is the output with y in {0, 1}.
+--   *  There has to be at least one row and every row must have the same length.
 splitXY :: [[Double]] -> ([[Double]], [Double])
 splitXY rows = 
   let xs = map init rows -- drop last element of each row

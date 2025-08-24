@@ -4,23 +4,24 @@ Description : Minimal logistic regression implementation
 
 This module implements a small toolkit for binary logistic regression:
 
-- 'numFeatures' — infer the number of features (columns) from a design matrix.
-- 'addIntercept' — prepend a 1.0 intercept column to a design matrix.
-- 'predict' — vectorised probability predictions @p(y=1 \| x)@.
-- 'trainGD' — batch gradient descent with simple early stopping.
-- 'initBeta' — random @N(0,1)@ initial parameters (including intercept).
-- 'to01' — threshold probabilities at 0.5 to get class labels.
+* 'numFeatures' — infer the number of features (columns) from a design matrix.
+* 'addIntercept' — prepend a 1.0 intercept column to a design matrix.
+* 'predict' — vectorised probability predictions @p(y=1 \| x)@.
+* 'logLoss' - Loss function given y and yHat (from 'predict')
+* 'initBeta' — random @N(0,1)@ initial parameters (including intercept).
+* 'trainGD' — batch gradient descent with simple early stopping.
+* 'to01' — threshold probabilities at 0.5 to get class labels.
 
 Notes:
 
-- Shapes: let @n@ be number of rows (samples) and @p@ be number of features.
-  After 'addIntercept', each row has length @p+1@; @beta@ must also have length @p+1@.
-- Numerical safety: 'logLoss' clamps probabilities to avoid @log 0@.
-- Random init: 'initBeta' uses Box–Muller to sample standard normals.
-- This implementation uses full-batch gradients (no mini-batching).
+* Shapes: let @m@ be number of rows (samples) and @n@ be number of features.
+* After 'addIntercept', each row has length @p+1@; @beta@ must also have length @p+1@.
+* Numerical safety: 'logLoss' clamps probabilities to avoid @log 0@.
+* Random init: 'initBeta' uses Box–Muller to sample standard normals.
+* This implementation uses full-batch gradients (no mini-batching).
 -}
 
-module LogisticRegression (numFeatures, initBeta, predict, trainGD, to01, addIntercept) where
+module LogisticRegression (numFeatures, addIntercept, predict, logLoss, initBeta, trainGD, to01, gradient, gdStep) where
 
 import Data.List (transpose)
 import System.Random (randomRIO)
@@ -37,7 +38,7 @@ numFeatures (r:_) = length r
 
 -- | Dot product of two vectors.
 --
---   Precondition: Both vectors have the same length.
+--   Assumption that both vectors have the same length.
 dot :: [Double] -> [Double] -> Double
 dot u v = sum (zipWith (*) u v)
 
@@ -71,10 +72,6 @@ predict beta x = map(predictRow beta) x
 --
 --   Uses a small @eps@ to clamp probabilities away from 0 and 1 for
 --   numerical stability.
---
---   @
---   L(y, \\hat{p}) = - \\sum_i \\big( y_i \\log \\hat{p}_i + (1-y_i) \\log (1-\\hat{p}_i) \\big)
---   @
 logLoss :: [Double] -> [Double] -> Double
 logLoss y yHat =
   let eps   = 1e-12
@@ -112,7 +109,8 @@ gradient beta xInt y =
   in  map (\col -> sum (zipWith (*) err col)) xT
 
 -- | One gradient-descent update:
---   @beta \\leftarrow beta - \\alpha \\nabla L(beta)@.
+--
+-- @beta := beta - alpha * gradient(beta)@
 gdStep :: Double -> [Double] -> [[Double]] -> [Double] -> [Double]
 gdStep alpha beta xInt y =
   let g = gradient beta xInt y

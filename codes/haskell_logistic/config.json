@@ -1,0 +1,5 @@
+{
+  "file": "data.csv",
+  "maxIters": 5000,
+  "alpha": 0.01
+}
