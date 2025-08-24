@@ -17,5 +17,4 @@ executable logistic
                        -Wincomplete-uni-patterns
                        -Wmissing-export-lists
                        -Wmissing-home-modules
-                       -Wpartial-fields
                        -Wredundant-constraints
