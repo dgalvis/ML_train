@@ -6,3 +6,4 @@
 **/.stack-work/
 *.o
 *.hi
+*.swp
