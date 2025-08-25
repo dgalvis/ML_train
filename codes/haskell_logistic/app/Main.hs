@@ -15,6 +15,7 @@ This executable:
   the number of regressors).  
   The final column is the output with @y ∈ {0, 1}@.  
   There must be at least one row and every row must have the same length.
+  The number of rows is the number of samples, @m@
 
 * Splits the data into features (@X@) and labels (@y@).
 * Adds an intercept column to @X@.
@@ -77,8 +78,8 @@ main = do
 
   let xInt           = addIntercept x             -- add intercept term
       (betaTrained, _) = trainGD (maxIters cfg) (alpha cfg) beta xInt y -- produce optimised parameters
-      yHat           = predict betaTrained xInt   -- predicted probabilities
-      rows           = zipWith3 (\xs yi yHi -> xs ++ [yi, to01 yHi]) x y yHat :: [[Double]] -- regressors, output, predicted output
+      p           = predict betaTrained xInt   -- predicted probabilities
+      rows           = zipWith3 (\xi yi p_i -> xi ++ [yi, to01 p_i]) x y p :: [[Double]] -- regressors, output, predicted output
 
   putStrLn "x y pred"
   mapM_ print rows
