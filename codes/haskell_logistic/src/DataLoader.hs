@@ -56,7 +56,7 @@ loadCSV fp = do
 --
 --   * ([[Double]], [Double]) : pair @(X, y)@
 --     - @X@ is @m × n@ (all but last column of each row).
---     - @y = [yi]@ is the last column, with @yi ∈ {0,1}@.
+--     - @y := [yi]@ is the last column, with @yi ∈ {0,1}@.
 --
 --   __Example__
 --

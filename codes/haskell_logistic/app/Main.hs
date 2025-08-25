@@ -74,7 +74,7 @@ main = do
   let (x, y) = splitXY nums         -- split dataset into (features, labels)
       n      = numFeatures x        -- number of features
 
-  beta <- initBeta n                -- random initial parameter vector
+  beta <- initBeta (n + 1)              -- random initial parameter vector
 
   let xInt           = addIntercept x             -- add intercept term
       (betaTrained, _) = trainGD (maxIters cfg) (alpha cfg) beta xInt y -- produce optimised parameters
