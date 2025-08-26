@@ -72,14 +72,13 @@ main = do
 
   nums <- loadCSV (file cfg)
   let (x, y) = splitXY nums         -- split dataset into (features, labels)
-      n      = numFeatures x        -- number of features
+      xInt   = addIntercept x       -- add intercept term
 
-  beta <- initBeta (n + 1)              -- random initial parameter vector
+  beta <- initBeta (numFeatures xInt) -- random initial parameter vector
 
-  let xInt           = addIntercept x             -- add intercept term
-      (betaTrained, _) = trainGD (maxIters cfg) (alpha cfg) beta xInt y -- produce optimised parameters
-      p           = predict betaTrained xInt   -- predicted probabilities
-      rows           = zipWith3 (\xi yi p_i -> xi ++ [yi, to01 p_i]) x y p :: [[Double]] -- regressors, output, predicted output
+  let (betaTrained, _) = trainGD (maxIters cfg) (alpha cfg) beta xInt y    -- produce optimised parameters
+      p           = predict betaTrained xInt                               -- predicted probabilities
+      rows           = zipWith3 (\xi yi p_i -> xi ++ [yi, to01 p_i]) x y p -- regressors, output, predicted output
 
   putStrLn "x y pred"
   mapM_ print rows

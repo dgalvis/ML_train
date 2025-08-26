@@ -6,11 +6,11 @@ This module implements a small toolkit for binary logistic regression:
 
 * 'numFeatures' — infer the number of features (columns) from a design matrix.
 * 'addIntercept' — prepend a 1.0 intercept column to a design matrix.
-* 'predict' — vectorised probability predictions @p_i := p(yi=1 \| xi)@ for sample @i@.
+* 'predict' — vectorised probability predictions @p_i = p(yi=1 \| xi)@ for sample @i@.
 * 'logLoss' — loss function given @y@ and @p@ (from 'predict').
 * 'initBeta' — random @Normal(0,1)@ initial parameters (including intercept).
 * 'trainGD' — batch gradient descent with simple early stopping.
-* 'to01' — threshold probabilities at @yHati := p_i > 0.5@ for sample @i@ to get class labels.
+* 'to01' — threshold probabilities at @yHati = p_i > 0.5@ for sample @i@ to get class labels.
 
 Notes:
 
@@ -84,11 +84,11 @@ sigmoid z = 1.0 / (1.0 + exp ( - z))
 --
 --   __Input__
 --
---   * [[Double]] : X, design matrix @X := [xi]@ with each @xi \in R^n@.
+--   * [[Double]] : x, design matrix @x = [xi]@ with each @xi \in R^n@.
 --
 --   __Returns__
 --
---   * [[Double]] : XInt, matrix with intercept column, i.e., each row becomes @xi:= [1.0] ++ xi@.
+--   * [[Double]] : xInt, matrix with intercept column, i.e., each row becomes @xi := [1.0] ++ xi@.
 --
 --   __Example__
 --
@@ -101,31 +101,39 @@ addIntercept = map (1.0 :)
 --
 --   __Input__
 --
---   * [Double] : @beta@, parameters of length @n+1@ (including intercept).
---   * [Double] : @xi@, a single sample with a prepended @1.0@ (i.e., already intercept-augmented).
+--   * [Double] : @beta@, current parameters
+--   * [Double] : @xi@, a single sample.
 --
 --   __Returns__
 --
---   * Double : @p_i := p(yi = 1 | xi) = sigmoid(dot beta xi)@ for this sample.
+--   * Double : @p_i = p(yi = 1 | xi) = sigmoid(dot beta xi)@ for this sample.
+--
+--   __Notes__
+--
+--   * length xi is length beta.
 --
 --   __Example__
 --
 --   >>> predictRow [1,2,3] [1,4,6]   -- 1 is the intercept already in xi
 --   sigmoid (1*1 + 2*4 + 3*6)
 predictRow :: [Double] -> [Double] -> Double
-predictRow beta row = sigmoid (dot beta row)
+predictRow beta xi = sigmoid (dot beta xi)
 
 -- | Vectorised probability predictions for a design matrix.
 --
 --   __Input__
 --
---   * [Double]   : @beta@, parameters (length @n+1@).
---   * [[Double]] : @XInt@, matrix of intercept-augmented samples @xi@ (each starts with @1.0@).
+--   * [Double]   : @beta@, current parameters.
+--   * [[Double]] : @x = [xi]@, design matrix, rows xi are samples.
 --
 --   __Returns__
 --
---   * [Double] : @p := [p_i]@ where @p_i := p(yi = 1 | xi)@.
+--   * [Double] : @p = [p_i]@ where @p_i = p(yi = 1 | xi)@.
 --
+--   __Notes__
+--
+--   * x has same number of columns as beta (i.e., length xi is length beta).
+--  
 --   __Example__
 --
 --   >>> predict [1,2,3] [[1,2,3],[1,4,5]]
@@ -158,8 +166,8 @@ to01 p_i = if p_i > 0.5 then 1.0 else 0.0
 --
 --   __Input__
 --
---   * [Double] : @y := [yi]@, true labels with @yi in {0,1}@.
---   * [Double] : @p := [p_i]@, predicted probabilities with @p_i in (0,1)@.
+--   * [Double] : @y = [yi]@, true labels with @yi in {0,1}@.
+--   * [Double] : @p = [p_i]@, predicted probabilities with @p_i in (0,1)@.
 --
 --   __Returns__
 --
@@ -207,11 +215,11 @@ normalZ = do
 --
 --   __Input__
 --
---   * Int : @n@, number of features (without intercept).
+--   * Int : @n@, number of features.
 --
 --   __Returns__
 --
---   * IO [Double] : parameter vector @[beta_j]@ where each @beta_j ~ Normal(0,1)@.
+--   * IO [Double] : parameter vector @[betaj]@ where each @betaj ~ Normal(0,1)@.
 --
 --   __Example__
 --
@@ -227,21 +235,23 @@ initBeta n = sequence (replicate (n) normalZ)
 --   __Input__
 --
 --   * [Double]   : @beta@, current parameters (length @n+1@).
---   * [[Double]] : @XInt@, intercept-augmented design matrix (each row is @xi@ with leading @1.0@).
---   * [Double]   : @y := [yi]@, labels.
+--   * [[Double]] : @x = [xi]@, design matrix, rows xi are samples. 
+--   * [Double]   : @y = [yi]@, labels.
 --
 --   __Returns__
 --
---   * [Double] : @gradient wrt beta of L = XInt^T (p - y)@ where @p := [pi]@ and @pi := sigmoid(dot beta xi)@.
+--   * [Double] : @gradient wrt beta of L = x^T (p - y)@ where @p = [pi]@ and @pi = sigmoid(dot(beta, xi))@ 
+--   where dot is the vector dot product.
 --
 --   __Notes__
 --
---   * Implementation computes @err = p - y@ then multiplies by columns of @XInt@.
+--   * Implementation computes @err = p - y@ then multiplies by columns of @x@.
+--   * x has same number of columns as beta (i.e., length xi is length beta).
 gradient :: [Double] -> [[Double]] -> [Double] -> [Double]
-gradient beta xInt y =
-  let p = predict beta xInt
-      err  = zipWith (-) p y -- yHat - y
-      xT   = transpose xInt     -- columns of X
+gradient beta x y =
+  let p = predict beta x
+      err  = zipWith (-) p y -- p - y
+      xT   = transpose x     -- columns of x
   in  map (\col -> sum (zipWith (*) err col)) xT
 
 -- | One gradient-descent update: @beta := beta - alpha * gradient(beta)@.
@@ -250,15 +260,19 @@ gradient beta xInt y =
 --
 --   * Double     : @alpha@, learning rate.
 --   * [Double]   : @beta@, current parameters.
---   * [[Double]] : @XInt@, intercept-augmented design matrix.
---   * [Double]   : @y := [yi]@, labels.
+--   * [[Double]] : @x = [xi]@, design matrix, rows xi are samples.
+--   * [Double]   : @y = [yi]@, labels.
 --
 --   __Returns__
 --
 --   * [Double] : @beta@, updated parameters after one step.
+--
+--   __Notes__
+--
+--   * x has same number of columns as beta (i.e., length xi is length beta).
 gdStep :: Double -> [Double] -> [[Double]] -> [Double] -> [Double]
-gdStep alpha beta xInt y =
-  let g = gradient beta xInt y
+gdStep alpha beta x y =
+  let g = gradient beta x y
   in  zipWith (-) beta (map (alpha *) g)
 
 -- | Train by batch gradient descent up to @maxIters@ with early stopping.
@@ -268,33 +282,34 @@ gdStep alpha beta xInt y =
 --   * Int        : @maxIters@, maximum number of iterations.
 --   * Double     : @alpha@, learning rate.
 --   * [Double]   : @beta0@, initial parameters.
---   * [[Double]] : @xInt@, intercept-augmented design matrix.
---   * [Double]   : @y := [yi]@, labels.
+--   * [[Double]] : @x = [xi]@, design matrix, rows xi are samples.
+--   * [Double]   : @y = [yi]@, labels.
 --
 --   __Returns__
 --
 --   * ([Double], [Double]) : @(finalBeta, lossHistory_oldestFirst)@.
 --
---   __Early stopping__
+--   __Notes__
 --
 --   * If the loss increases at an iteration, training stops and the previous
 --     parameters are returned (the loss history excludes the increasing step).
+--   * x has same number of columns as beta0 (i.e., length xi is length beta0).
 --
 --   __Example__
 --
---   >>> let (b, hist) = trainGD 100 0.1 b0 xInt y
+--   >>> let (b, hist) = trainGD 100 0.1 b0 x y
 --   >>> print(length hist > 10)
 --   True
 trainGD :: Int -> Double -> [Double] -> [[Double]] -> [Double] -> ([Double], [Double])
-trainGD maxIters alpha beta0 xInt y =
-  let l0 = logLoss y (predict beta0 xInt)
+trainGD maxIters alpha beta0 x y =
+  let l0 = logLoss y (predict beta0 x)
   in  go 0 beta0 l0 [l0]
   where
     go k beta prevLoss acc
       | k >= maxIters = (beta, reverse acc)
       | otherwise =
-          let beta' = gdStep alpha beta xInt y
-              loss' = logLoss y (predict beta' xInt)
+          let beta' = gdStep alpha beta x y
+              loss' = logLoss y (predict beta' x)
           in  if loss' > prevLoss
                 then (beta, reverse acc)        -- early stop; keep previous beta
                 else go (k + 1) beta' loss' (loss' : acc)
