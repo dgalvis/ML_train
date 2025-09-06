@@ -764,9 +764,10 @@ y_M
 \]</div>
 <p>OLS is one of the few machine learning methods with a <strong>closed-form analytic solution</strong> for the best-fit parameters. The solution is:</p>
 <div class="arithmatex">\[
-\boldsymbol{\beta} = (X^\top X)^{-1} X^\top \mathbf{y}
+\boldsymbol{\hat{\beta}} = (X^\top X)^{-1} X^\top \mathbf{y}
 \]</div>
-<p>This gives the value of <span class="arithmatex">\( \boldsymbol{\beta} \)</span> that minimises the cost function and fits the training data as closely as possible in the least-squares sense.</p>
+<p>This gives the vector <span class="arithmatex">\( \boldsymbol{\hat{\beta}} \)</span> that minimises the cost function and fits the training data as closely as possible in the least-squares sense.
+This is our best estimate of the true <span class="arithmatex">\( \boldsymbol{\beta} \)</span><sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>.</p>
 <hr>
 <hr>
 
@@ -913,7 +914,7 @@ Activate the virtual environment we created earlier (see <a href="requirements.h
 <ul>
 <li>The file <code>__init__.py</code> marks the directory as a <strong>Python package</strong>, allowing you to import its modules elsewhere in your project.</li>
 <li>The file <code>lin_reg.py</code> defines the <code>LinearRegression</code> <strong>class</strong>, which implements our regression model and associated methods.</li>
-<li>The file <code>test_lin_reg.py</code> contains <strong>unit tests</strong> to verify that the implementation in <code>lin_reg.py</code> works correctly<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>.</li>
+<li>The file <code>test_lin_reg.py</code> contains <strong>unit tests</strong> to verify that the implementation in <code>lin_reg.py</code> works correctly<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>.</li>
 </ul>
 <p>We start by importing the required libraries:</p>
 <div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Python</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-13-1">1</a></span>
@@ -925,7 +926,7 @@ Activate the virtual environment we created earlier (see <a href="requirements.h
 </span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NDArray</span>
 </span></code></pre></div></td></tr></table></div>
 <p>Every <code>Python</code> class can define an <strong>initialiser method</strong> (often called the <em>constructor</em> in other languages) using <code>__init__</code>.
-This special method is automatically executed when a new instance of the class is created<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>.</p>
+This special method is automatically executed when a new instance of the class is created<sup id="fnref:3"><a class="footnote-ref" href="#fn:3">3</a></sup>.</p>
 <div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Python</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-14-1">1</a></span>
 <span class="normal"><a href="#__codelineno-14-2">2</a></span>
 <span class="normal"><a href="#__codelineno-14-3">3</a></span>
@@ -982,7 +983,7 @@ Once <code>beta</code> is set, you can call <code>predict(X)</code> on <strong>a
 </ul>
 <p>Mathematically, predictions are always
 $$
-\hat{\mathbf{y}} = X\,\boldsymbol{\beta}.
+\hat{\mathbf{y}} = X\,\boldsymbol{\hat{\beta}}.
 $$</p>
 <p>If the model was created with <code>add_bias=True</code>, <code>predict</code> will <strong>automatically prepend</strong> the column of ones to whatever <code>X</code> you pass in. It then delegates to the internal <code>_predict</code>, which assumes <code>X</code> is already in final matrix form (bias included if needed).</p>
 <blockquote>
@@ -1015,7 +1016,7 @@ $$</p>
 <h4 id="computing-residuals-train-vs-test">Computing residuals (train vs. test)<a class="headerlink" href="#computing-residuals-train-vs-test" title="Permanent link">&para;</a></h4>
 <p>Residuals are the differences between observed targets and predictions:
 $$
-\mathbf{r} = \mathbf{y} - \hat{\mathbf{y}} = \mathbf{y} - X\boldsymbol{\beta}
+\mathbf{r} = \mathbf{y} - \hat{\mathbf{y}} = \mathbf{y} - X\boldsymbol{\hat{\beta}}
 $$</p>
 <p>Use the same <code>residuals(X, y)</code> method for either training or test data:</p>
 <ul>
@@ -1050,6 +1051,9 @@ $$</p>
 </span><span id="__span-17-13"><a id="__codelineno-17-13" name="__codelineno-17-13"></a>    <span class="k">return</span> <span class="n">y</span> <span class="o">-</span> <span class="n">y_pred</span>
 </span></code></pre></div></td></tr></table></div>
 <h4 id="calculating-statistics">Calculating Statistics<a class="headerlink" href="#calculating-statistics" title="Permanent link">&para;</a></h4>
+<div class="admonition warning">
+<p class="admonition-title">These statistics may assume that an intercept is included, i.e., <code>add_bias is True</code> and <span class="arithmatex">\(\beta_0\)</span> is not assumed to be <span class="arithmatex">\(0\)</span>. The code will warn you about this too. The key point is that without an intercept, we cannot assume that the residuals have zero mean!</p>
+</div>
 <h5 id="residual-summary-statistics">Residual summary statistics<a class="headerlink" href="#residual-summary-statistics" title="Permanent link">&para;</a></h5>
 <p>The <code>residual_stats</code> method returns the <strong>five-number summary</strong> of the model residuals:</p>
 <ul>
@@ -1106,17 +1110,17 @@ Q_3(\mathbf{r}),
 <p>The <strong>Residual Standard Error</strong> (RSE) measures the typical size of the residuals — in other words, how far the model's predictions are from the observed values on average.</p>
 <p>It is defined as:
 $$
-\mathrm{RSE} = \sqrt{\frac{\mathrm{RSS}}{n - p}}
+\mathrm{RSE} = \sqrt{\frac{\mathrm{RSS}}{m - p}}
 $$</p>
 <p>where:</p>
 <ul>
-<li><span class="arithmatex">\(\mathrm{RSS} = \sum_{i=1}^n r_i^2\)</span> is the <strong>Residual Sum of Squares</strong>,</li>
-<li><span class="arithmatex">\(n\)</span> is the number of observations,</li>
-<li><span class="arithmatex">\(p\)</span> is the number of estimated parameters (including the intercept).</li>
+<li><span class="arithmatex">\(\mathrm{RSS} = \sum_{i=1}^m r_i^2\)</span> is the <strong>Residual Sum of Squares</strong>,</li>
+<li><span class="arithmatex">\(m\)</span> is the number of observations,</li>
+<li><span class="arithmatex">\(p\)</span> is the number of estimated parameters, <span class="arithmatex">\(N + 1\)</span>.</li>
 </ul>
 <p>This formula is equivalent to taking the square root of the estimated error variance:
 $$
-\hat{\sigma}^2 = \frac{\mathrm{RSS}}{n - p}
+\hat{\sigma}^2 = \frac{\mathrm{RSS}}{m - p}
 \quad\Rightarrow\quad
 \mathrm{RSE} = \sqrt{\hat{\sigma}^2}
 $$</p>
@@ -1144,12 +1148,12 @@ $$</p>
 </span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6"></a>    <span class="n">residuals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_residuals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
 </span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7"></a>
 </span><span id="__span-19-8"><a id="__codelineno-19-8" name="__codelineno-19-8"></a>    <span class="c1"># Number of observations and parameters</span>
-</span><span id="__span-19-9"><a id="__codelineno-19-9" name="__codelineno-19-9"></a>    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">residuals</span><span class="p">)</span>
+</span><span id="__span-19-9"><a id="__codelineno-19-9" name="__codelineno-19-9"></a>    <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">residuals</span><span class="p">)</span>
 </span><span id="__span-19-10"><a id="__codelineno-19-10" name="__codelineno-19-10"></a>    <span class="n">p</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">)</span>
 </span><span id="__span-19-11"><a id="__codelineno-19-11" name="__codelineno-19-11"></a>
 </span><span id="__span-19-12"><a id="__codelineno-19-12" name="__codelineno-19-12"></a>    <span class="c1"># Compute residual sum of squares and standard error</span>
 </span><span id="__span-19-13"><a id="__codelineno-19-13" name="__codelineno-19-13"></a>    <span class="n">RSS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">residuals</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
-</span><span id="__span-19-14"><a id="__codelineno-19-14" name="__codelineno-19-14"></a>    <span class="n">RSE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">RSS</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">p</span><span class="p">))</span>
+</span><span id="__span-19-14"><a id="__codelineno-19-14" name="__codelineno-19-14"></a>    <span class="n">RSE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">RSS</span> <span class="o">/</span> <span class="p">(</span><span class="n">m</span> <span class="o">-</span> <span class="n">p</span><span class="p">))</span>
 </span><span id="__span-19-15"><a id="__codelineno-19-15" name="__codelineno-19-15"></a>
 </span><span id="__span-19-16"><a id="__codelineno-19-16" name="__codelineno-19-16"></a>    <span class="k">return</span> <span class="n">RSE</span>
 </span></code></pre></div></td></tr></table></div>
@@ -1160,18 +1164,18 @@ R^2 = 1 - \frac{\mathrm{RSS}}{\mathrm{TSS}}
 \]</div>
 <p>where:</p>
 <ul>
-<li><span class="arithmatex">\(\mathrm{RSS} = \sum_{i=1}^n r_i^2\)</span> is the <strong>Residual Sum of Squares</strong> (unexplained variance),</li>
-<li><span class="arithmatex">\(\mathrm{TSS} = \sum_{i=1}^n (y_i - \bar{y})^2\)</span> is the <strong>Total Sum of Squares</strong> (total variance in the data).</li>
+<li><span class="arithmatex">\(\mathrm{RSS} = \sum_{i=1}^m r_i^2\)</span> is the <strong>Residual Sum of Squares</strong> (unexplained variance),</li>
+<li><span class="arithmatex">\(\mathrm{TSS} = \sum_{i=1}^m (y_i - \bar{y})^2\)</span> is the <strong>Total Sum of Squares</strong> (total variance in the data).</li>
 </ul>
 <p>While <span class="arithmatex">\(R^2\)</span> indicates goodness of fit, it always increases when more predictors are added — even if they are not useful.<br />
 To account for this, we compute the <strong>adjusted <span class="arithmatex">\(R^2\)</span></strong>:</p>
 <div class="arithmatex">\[
-R^2_{\text{adj}} = 1 - \frac{\mathrm{RSS}/(n - p)}{\mathrm{TSS}/(n - 1)}
+R^2_{\text{adj}} = 1 - \frac{\mathrm{RSS}/(m - p)}{\mathrm{TSS}/(m - 1)}
 \]</div>
 <p>where:</p>
 <ul>
-<li><span class="arithmatex">\(n\)</span> = number of observations,</li>
-<li><span class="arithmatex">\(p\)</span> = number of estimated parameters (including the intercept).</li>
+<li><span class="arithmatex">\(m\)</span> = number of observations,</li>
+<li><span class="arithmatex">\(p\)</span> = number of estimated parameters, <span class="arithmatex">\(N+1\)</span> (including the intercept).</li>
 </ul>
 <p>Adjusted <span class="arithmatex">\(R^2\)</span> penalizes the inclusion of unnecessary predictors, making it a better measure for comparing models with different numbers of features.</p>
 <div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Python</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-20-1"> 1</a></span>
@@ -1205,7 +1209,7 @@ R^2_{\text{adj}} = 1 - \frac{\mathrm{RSS}/(n - p)}{\mathrm{TSS}/(n - 1)}
 </span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6"></a>    <span class="n">residuals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_residuals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
 </span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7"></a>
 </span><span id="__span-20-8"><a id="__codelineno-20-8" name="__codelineno-20-8"></a>    <span class="c1"># Number of observations and estimated parameters</span>
-</span><span id="__span-20-9"><a id="__codelineno-20-9" name="__codelineno-20-9"></a>    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">residuals</span><span class="p">)</span>
+</span><span id="__span-20-9"><a id="__codelineno-20-9" name="__codelineno-20-9"></a>    <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">residuals</span><span class="p">)</span>
 </span><span id="__span-20-10"><a id="__codelineno-20-10" name="__codelineno-20-10"></a>    <span class="n">p</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">)</span>
 </span><span id="__span-20-11"><a id="__codelineno-20-11" name="__codelineno-20-11"></a>
 </span><span id="__span-20-12"><a id="__codelineno-20-12" name="__codelineno-20-12"></a>    <span class="c1"># Residual Sum of Squares (unexplained variance)</span>
@@ -1218,14 +1222,14 @@ R^2_{\text{adj}} = 1 - \frac{\mathrm{RSS}/(n - p)}{\mathrm{TSS}/(n - 1)}
 </span><span id="__span-20-19"><a id="__codelineno-20-19" name="__codelineno-20-19"></a>    <span class="n">R_squared</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">RSS</span> <span class="o">/</span> <span class="n">TSS</span>
 </span><span id="__span-20-20"><a id="__codelineno-20-20" name="__codelineno-20-20"></a>
 </span><span id="__span-20-21"><a id="__codelineno-20-21" name="__codelineno-20-21"></a>    <span class="c1"># Adjusted R² penalizes for model complexity</span>
-</span><span id="__span-20-22"><a id="__codelineno-20-22" name="__codelineno-20-22"></a>    <span class="n">R_squared_adj</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">RSS</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">p</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">TSS</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+</span><span id="__span-20-22"><a id="__codelineno-20-22" name="__codelineno-20-22"></a>    <span class="n">R_squared_adj</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">RSS</span> <span class="o">/</span> <span class="p">(</span><span class="n">m</span> <span class="o">-</span> <span class="n">p</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">TSS</span> <span class="o">/</span> <span class="p">(</span><span class="n">m</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
 </span><span id="__span-20-23"><a id="__codelineno-20-23" name="__codelineno-20-23"></a>
 </span><span id="__span-20-24"><a id="__codelineno-20-24" name="__codelineno-20-24"></a>    <span class="k">return</span> <span class="n">R_squared</span><span class="p">,</span> <span class="n">R_squared_adj</span>
 </span></code></pre></div></td></tr></table></div>
 <h5 id="overall-significance-the-f-stat-and-p-value">Overall significance: the F-stat and p-value<a class="headerlink" href="#overall-significance-the-f-stat-and-p-value" title="Permanent link">&para;</a></h5>
 <p>The <strong><span class="arithmatex">\(F\)</span>-statistic</strong> tests the null hypothesis that <strong>all regression coefficients except the intercept are equal to zero</strong>:</p>
 <div class="arithmatex">\[
-H_0: \beta_1 = \beta_2 = \dots = \beta_{p-1} = 0
+H_0: \beta_1 = \beta_2 = \dots = \beta_{N} = 0
 \]</div>
 <p>In other words, it checks whether the model provides a better fit than one with only the intercept.</p>
 <ul>
@@ -1236,16 +1240,12 @@ H_0: \beta_1 = \beta_2 = \dots = \beta_{p-1} = 0
   $$
   \mathrm{MSR} = \frac{\mathrm{TSS} - \mathrm{RSS}}{df_1}
   $$
-  where:<ul>
-<li><span class="arithmatex">\(df_1 = p - 1\)</span> (if <code>self._add_bias=True</code>) </li>
-<li><span class="arithmatex">\(df_1 = p\)</span> (if <code>self._add_bias = False</code>).</li>
-</ul>
-</li>
+  where <span class="arithmatex">\(df_1 = (m - 1) - (m - p)= p - 1\)</span>.</li>
 <li><strong>Mean Square Error (MSE)</strong> — average unexplained variance per residual degree of freedom:
   $$
   \mathrm{MSE} = \frac{\mathrm{RSS}}{df_2}
   $$
-  where <span class="arithmatex">\(df_2 = n-p\)</span>.</li>
+  where <span class="arithmatex">\(df_2 = m - p\)</span>.</li>
 </ul>
 </li>
 <li>
@@ -1300,10 +1300,7 @@ $$</p>
 <span class="normal"><a href="#__codelineno-21-29">29</a></span>
 <span class="normal"><a href="#__codelineno-21-30">30</a></span>
 <span class="normal"><a href="#__codelineno-21-31">31</a></span>
-<span class="normal"><a href="#__codelineno-21-32">32</a></span>
-<span class="normal"><a href="#__codelineno-21-33">33</a></span>
-<span class="normal"><a href="#__codelineno-21-34">34</a></span>
-<span class="normal"><a href="#__codelineno-21-35">35</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">F_score</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="normal"><a href="#__codelineno-21-32">32</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">F_score</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 </span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2"></a>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Model has not been fitted yet.&quot;</span><span class="p">)</span>
 </span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4"></a>
@@ -1311,7 +1308,7 @@ $$</p>
 </span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6"></a>    <span class="n">residuals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_residuals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
 </span><span id="__span-21-7"><a id="__codelineno-21-7" name="__codelineno-21-7"></a>
 </span><span id="__span-21-8"><a id="__codelineno-21-8" name="__codelineno-21-8"></a>    <span class="c1"># Number of observations and number of estimated parameters</span>
-</span><span id="__span-21-9"><a id="__codelineno-21-9" name="__codelineno-21-9"></a>    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">residuals</span><span class="p">)</span>
+</span><span id="__span-21-9"><a id="__codelineno-21-9" name="__codelineno-21-9"></a>    <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">residuals</span><span class="p">)</span>
 </span><span id="__span-21-10"><a id="__codelineno-21-10" name="__codelineno-21-10"></a>    <span class="n">p</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">)</span>
 </span><span id="__span-21-11"><a id="__codelineno-21-11" name="__codelineno-21-11"></a>
 </span><span id="__span-21-12"><a id="__codelineno-21-12" name="__codelineno-21-12"></a>    <span class="c1"># Residual Sum of Squares (RSS) — unexplained variation</span>
@@ -1321,23 +1318,20 @@ $$</p>
 </span><span id="__span-21-16"><a id="__codelineno-21-16" name="__codelineno-21-16"></a>    <span class="n">TSS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
 </span><span id="__span-21-17"><a id="__codelineno-21-17" name="__codelineno-21-17"></a>
 </span><span id="__span-21-18"><a id="__codelineno-21-18" name="__codelineno-21-18"></a>    <span class="c1"># Degrees of freedom</span>
-</span><span id="__span-21-19"><a id="__codelineno-21-19" name="__codelineno-21-19"></a>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_bias</span><span class="p">:</span>
-</span><span id="__span-21-20"><a id="__codelineno-21-20" name="__codelineno-21-20"></a>        <span class="n">df1</span> <span class="o">=</span> <span class="n">p</span> <span class="o">-</span> <span class="mi">1</span>            <span class="c1"># Numerator degrees of freedom (model)</span>
-</span><span id="__span-21-21"><a id="__codelineno-21-21" name="__codelineno-21-21"></a>    <span class="k">else</span><span class="p">:</span>
-</span><span id="__span-21-22"><a id="__codelineno-21-22" name="__codelineno-21-22"></a>        <span class="n">df1</span> <span class="o">=</span> <span class="n">p</span>
-</span><span id="__span-21-23"><a id="__codelineno-21-23" name="__codelineno-21-23"></a>    <span class="n">df2</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="n">p</span>            <span class="c1"># Denominator degrees of freedom (residuals)</span>
-</span><span id="__span-21-24"><a id="__codelineno-21-24" name="__codelineno-21-24"></a>
-</span><span id="__span-21-25"><a id="__codelineno-21-25" name="__codelineno-21-25"></a>    <span class="c1"># Mean Square Regression and Mean Square Error</span>
-</span><span id="__span-21-26"><a id="__codelineno-21-26" name="__codelineno-21-26"></a>    <span class="n">MSR</span> <span class="o">=</span> <span class="p">(</span><span class="n">TSS</span> <span class="o">-</span> <span class="n">RSS</span><span class="p">)</span> <span class="o">/</span> <span class="n">df1</span>  <span class="c1"># Explained variance per parameter</span>
-</span><span id="__span-21-27"><a id="__codelineno-21-27" name="__codelineno-21-27"></a>    <span class="n">MSE</span> <span class="o">=</span> <span class="n">RSS</span> <span class="o">/</span> <span class="n">df2</span>          <span class="c1"># Unexplained variance per residual degree of freedom</span>
+</span><span id="__span-21-19"><a id="__codelineno-21-19" name="__codelineno-21-19"></a>    <span class="n">df1</span> <span class="o">=</span> <span class="n">p</span> <span class="o">-</span> <span class="mi">1</span>            <span class="c1"># Numerator degrees of freedom</span>
+</span><span id="__span-21-20"><a id="__codelineno-21-20" name="__codelineno-21-20"></a>    <span class="n">df2</span> <span class="o">=</span> <span class="n">m</span> <span class="o">-</span> <span class="n">p</span>            <span class="c1"># Denominator degrees of freedom (residuals)</span>
+</span><span id="__span-21-21"><a id="__codelineno-21-21" name="__codelineno-21-21"></a>
+</span><span id="__span-21-22"><a id="__codelineno-21-22" name="__codelineno-21-22"></a>    <span class="c1"># Mean Square Regression and Mean Square Error</span>
+</span><span id="__span-21-23"><a id="__codelineno-21-23" name="__codelineno-21-23"></a>    <span class="n">MSR</span> <span class="o">=</span> <span class="p">(</span><span class="n">TSS</span> <span class="o">-</span> <span class="n">RSS</span><span class="p">)</span> <span class="o">/</span> <span class="n">df1</span>  <span class="c1"># Explained variance per parameter</span>
+</span><span id="__span-21-24"><a id="__codelineno-21-24" name="__codelineno-21-24"></a>    <span class="n">MSE</span> <span class="o">=</span> <span class="n">RSS</span> <span class="o">/</span> <span class="n">df2</span>          <span class="c1"># Unexplained variance per residual degree of freedom</span>
+</span><span id="__span-21-25"><a id="__codelineno-21-25" name="__codelineno-21-25"></a>
+</span><span id="__span-21-26"><a id="__codelineno-21-26" name="__codelineno-21-26"></a>    <span class="c1"># F-statistic: ratio of explained to unexplained variance</span>
+</span><span id="__span-21-27"><a id="__codelineno-21-27" name="__codelineno-21-27"></a>    <span class="n">F_stat</span> <span class="o">=</span> <span class="n">MSR</span> <span class="o">/</span> <span class="n">MSE</span>
 </span><span id="__span-21-28"><a id="__codelineno-21-28" name="__codelineno-21-28"></a>
-</span><span id="__span-21-29"><a id="__codelineno-21-29" name="__codelineno-21-29"></a>    <span class="c1"># F-statistic: ratio of explained to unexplained variance</span>
-</span><span id="__span-21-30"><a id="__codelineno-21-30" name="__codelineno-21-30"></a>    <span class="n">F_stat</span> <span class="o">=</span> <span class="n">MSR</span> <span class="o">/</span> <span class="n">MSE</span>
+</span><span id="__span-21-29"><a id="__codelineno-21-29" name="__codelineno-21-29"></a>    <span class="c1"># p-value from the F-distribution (right-tailed test)</span>
+</span><span id="__span-21-30"><a id="__codelineno-21-30" name="__codelineno-21-30"></a>    <span class="n">p_value</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">stats</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">F_stat</span><span class="p">,</span> <span class="n">df1</span><span class="p">,</span> <span class="n">df2</span><span class="p">)</span>
 </span><span id="__span-21-31"><a id="__codelineno-21-31" name="__codelineno-21-31"></a>
-</span><span id="__span-21-32"><a id="__codelineno-21-32" name="__codelineno-21-32"></a>    <span class="c1"># p-value from the F-distribution (right-tailed test)</span>
-</span><span id="__span-21-33"><a id="__codelineno-21-33" name="__codelineno-21-33"></a>    <span class="n">p_value</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">stats</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">F_stat</span><span class="p">,</span> <span class="n">df1</span><span class="p">,</span> <span class="n">df2</span><span class="p">)</span>
-</span><span id="__span-21-34"><a id="__codelineno-21-34" name="__codelineno-21-34"></a>
-</span><span id="__span-21-35"><a id="__codelineno-21-35" name="__codelineno-21-35"></a>    <span class="k">return</span> <span class="n">F_stat</span><span class="p">,</span> <span class="n">p_value</span>
+</span><span id="__span-21-32"><a id="__codelineno-21-32" name="__codelineno-21-32"></a>    <span class="k">return</span> <span class="n">F_stat</span><span class="p">,</span> <span class="n">p_value</span>
 </span></code></pre></div></td></tr></table></div>
 <h5 id="standard-errors-of-coefficients">Standard Errors of Coefficients<a class="headerlink" href="#standard-errors-of-coefficients" title="Permanent link">&para;</a></h5>
 <p>The <strong>standard error</strong> of each regression coefficient measures the variability of its estimate across hypothetical repeated samples.
@@ -1359,13 +1353,13 @@ It comes from the diagonal entries of the <strong>variance–covariance matrix</
 <p><strong>Estimate the variance of the residuals</strong>:
    Using
    $$
-   \hat{\sigma}^2 = \frac{\text{RSS}}{n - p}
+   \hat{\sigma}^2 = \frac{\text{RSS}}{m - p}
    $$
    where:</p>
 <ul>
 <li><span class="arithmatex">\(\text{RSS} = \sum_i r_i^2\)</span> is the residual sum of squares,</li>
-<li><span class="arithmatex">\(n\)</span> is the number of observations,</li>
-<li><span class="arithmatex">\(p\)</span> is the number of estimated parameters (including the intercept).</li>
+<li><span class="arithmatex">\(m\)</span> is the number of observations,</li>
+<li><span class="arithmatex">\(p\)</span> is the number of estimated parameters, <span class="arithmatex">\(N+1\)</span> (including the intercept).</li>
 </ul>
 </li>
 <li>
@@ -1416,10 +1410,10 @@ It comes from the diagonal entries of the <strong>variance–covariance matrix</
 </span><span id="__span-22-9"><a id="__codelineno-22-9" name="__codelineno-22-9"></a>    <span class="n">XtX_inv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">)</span>
 </span><span id="__span-22-10"><a id="__codelineno-22-10" name="__codelineno-22-10"></a>
 </span><span id="__span-22-11"><a id="__codelineno-22-11" name="__codelineno-22-11"></a>    <span class="c1"># Compute estimated variance of errors</span>
-</span><span id="__span-22-12"><a id="__codelineno-22-12" name="__codelineno-22-12"></a>    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">residuals</span><span class="p">)</span>
+</span><span id="__span-22-12"><a id="__codelineno-22-12" name="__codelineno-22-12"></a>    <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">residuals</span><span class="p">)</span>
 </span><span id="__span-22-13"><a id="__codelineno-22-13" name="__codelineno-22-13"></a>    <span class="n">p</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">)</span>
 </span><span id="__span-22-14"><a id="__codelineno-22-14" name="__codelineno-22-14"></a>    <span class="n">RSS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">residuals</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
-</span><span id="__span-22-15"><a id="__codelineno-22-15" name="__codelineno-22-15"></a>    <span class="n">sigma_squared</span> <span class="o">=</span> <span class="n">RSS</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">p</span><span class="p">)</span>
+</span><span id="__span-22-15"><a id="__codelineno-22-15" name="__codelineno-22-15"></a>    <span class="n">sigma_squared</span> <span class="o">=</span> <span class="n">RSS</span> <span class="o">/</span> <span class="p">(</span><span class="n">m</span> <span class="o">-</span> <span class="n">p</span><span class="p">)</span>
 </span><span id="__span-22-16"><a id="__codelineno-22-16" name="__codelineno-22-16"></a>
 </span><span id="__span-22-17"><a id="__codelineno-22-17" name="__codelineno-22-17"></a>    <span class="c1"># Compute variance-covariance matrix of beta</span>
 </span><span id="__span-22-18"><a id="__codelineno-22-18" name="__codelineno-22-18"></a>    <span class="n">var_beta</span> <span class="o">=</span> <span class="n">sigma_squared</span> <span class="o">*</span> <span class="n">XtX_inv</span>
@@ -1444,12 +1438,12 @@ It comes from the diagonal entries of the <strong>variance–covariance matrix</
 <p><strong>Determine degrees of freedom</strong>
    We use:
    $$
-   \text{df} = n - p
+   \text{df} = m - p
    $$
    where:</p>
 <ul>
-<li><span class="arithmatex">\(n\)</span> is the number of observations,</li>
-<li><span class="arithmatex">\(p\)</span> is the number of parameters estimated (including the intercept).</li>
+<li><span class="arithmatex">\(m\)</span> is the number of observations,</li>
+<li><span class="arithmatex">\(p\)</span> is the number of parameters estimated, <span class="arithmatex">\(N + 1\)</span> (including the intercept).</li>
 </ul>
 </li>
 <li>
@@ -1486,11 +1480,11 @@ Small p-values (commonly below 0.05) suggest that the coefficient is statistical
 </span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6"></a>    <span class="n">t_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefficients_SE</span><span class="p">()</span>
 </span><span id="__span-23-7"><a id="__codelineno-23-7" name="__codelineno-23-7"></a>
 </span><span id="__span-23-8"><a id="__codelineno-23-8" name="__codelineno-23-8"></a>    <span class="c1"># Number of observations and number of parameters</span>
-</span><span id="__span-23-9"><a id="__codelineno-23-9" name="__codelineno-23-9"></a>    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+</span><span id="__span-23-9"><a id="__codelineno-23-9" name="__codelineno-23-9"></a>    <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
 </span><span id="__span-23-10"><a id="__codelineno-23-10" name="__codelineno-23-10"></a>    <span class="n">p</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">)</span>
 </span><span id="__span-23-11"><a id="__codelineno-23-11" name="__codelineno-23-11"></a>
 </span><span id="__span-23-12"><a id="__codelineno-23-12" name="__codelineno-23-12"></a>    <span class="c1"># Compute two-tailed p-values using the t-distribution CDF</span>
-</span><span id="__span-23-13"><a id="__codelineno-23-13" name="__codelineno-23-13"></a>    <span class="n">p_values</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">stats</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">t_values</span><span class="p">),</span> <span class="n">df</span><span class="o">=</span><span class="n">n</span> <span class="o">-</span> <span class="n">p</span><span class="p">))</span>
+</span><span id="__span-23-13"><a id="__codelineno-23-13" name="__codelineno-23-13"></a>    <span class="n">p_values</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">stats</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">t_values</span><span class="p">),</span> <span class="n">df</span><span class="o">=</span><span class="n">m</span> <span class="o">-</span> <span class="n">p</span><span class="p">))</span>
 </span><span id="__span-23-14"><a id="__codelineno-23-14" name="__codelineno-23-14"></a>
 </span><span id="__span-23-15"><a id="__codelineno-23-15" name="__codelineno-23-15"></a>    <span class="k">return</span> <span class="n">t_values</span><span class="p">,</span> <span class="n">p_values</span>
 </span></code></pre></div></td></tr></table></div>
@@ -1503,10 +1497,13 @@ Small p-values (commonly below 0.05) suggest that the coefficient is statistical
 <hr />
 <ol>
 <li id="fn:1">
-<p>Testing is beyond the scope of this tutorial, but it is an essential skill in software development. Automated tests help ensure that your code produces the expected results, prevent regressions when you make changes, and improve confidence in the correctness of your program.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+<p>In code, we will use <span class="arithmatex">\( \boldsymbol{\beta} \)</span> as shorthand for <span class="arithmatex">\( \boldsymbol{\hat{\beta}} \)</span>.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
 </li>
 <li id="fn:2">
-<p>In general, I will reduce the docstrings for presentation here. You can gain additional context by looking through the docstrings in <code>lin_reg.py</code>.&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+<p>Testing is beyond the scope of this tutorial, but it is an essential skill in software development. Automated tests help ensure that your code produces the expected results, prevent regressions when you make changes, and improve confidence in the correctness of your program.&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:3">
+<p>In general, I will reduce the docstrings for presentation here. You can gain additional context by looking through the docstrings in <code>lin_reg.py</code>.&#160;<a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 3 in the text">&#8617;</a></p>
 </li>
 </ol>
 </div>
