@@ -76,10 +76,13 @@ y_M
 OLS is one of the few machine learning methods with a **closed-form analytic solution** for the best-fit parameters. The solution is:
 
 \[
-\boldsymbol{\beta} = (X^\top X)^{-1} X^\top \mathbf{y}
+\boldsymbol{\hat{\beta}} = (X^\top X)^{-1} X^\top \mathbf{y}
 \]
 
-This gives the value of \( \boldsymbol{\beta} \) that minimises the cost function and fits the training data as closely as possible in the least-squares sense.
+This gives the vector \( \boldsymbol{\hat{\beta}} \) that minimises the cost function and fits the training data as closely as possible in the least-squares sense.
+This is our best estimate of the true \( \boldsymbol{\beta} \)[^1].
+
+[^1]: In code, we will use \( \boldsymbol{\beta} \) as shorthand for \( \boldsymbol{\hat{\beta}} \).
 
 <hr>
 <hr>
@@ -273,9 +276,9 @@ All Python source code for this example is stored in the folder `./codes/modules
 
 - The file `__init__.py` marks the directory as a **Python package**, allowing you to import its modules elsewhere in your project.
 - The file `lin_reg.py` defines the `LinearRegression` **class**, which implements our regression model and associated methods.
-- The file `test_lin_reg.py` contains **unit tests** to verify that the implementation in `lin_reg.py` works correctly[^1].
+- The file `test_lin_reg.py` contains **unit tests** to verify that the implementation in `lin_reg.py` works correctly[^2].
 
-[^1]: Testing is beyond the scope of this tutorial, but it is an essential skill in software development. Automated tests help ensure that your code produces the expected results, prevent regressions when you make changes, and improve confidence in the correctness of your program.
+[^2]: Testing is beyond the scope of this tutorial, but it is an essential skill in software development. Automated tests help ensure that your code produces the expected results, prevent regressions when you make changes, and improve confidence in the correctness of your program.
 
 We start by importing the required libraries:
 
@@ -287,9 +290,9 @@ from numpy.typing import NDArray
 ```
 
 Every `Python` class can define an **initialiser method** (often called the *constructor* in other languages) using `__init__`.
-This special method is automatically executed when a new instance of the class is created[^2].
+This special method is automatically executed when a new instance of the class is created[^3].
 
-[^2]: In general, I will reduce the docstrings for presentation here. You can gain additional context by looking through the docstrings in `lin_reg.py`.
+[^3]: In general, I will reduce the docstrings for presentation here. You can gain additional context by looking through the docstrings in `lin_reg.py`.
 
 ``` python {linenums="1", title='Python'}
 class LinearRegression:
