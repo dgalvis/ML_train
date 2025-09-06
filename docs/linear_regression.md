@@ -338,7 +338,7 @@ Once `beta` is set, you can call `predict(X)` on **any** dataset that has the sa
 
 Mathematically, predictions are always
 $$
-\hat{\mathbf{y}} = X\,\boldsymbol{\beta}.
+\hat{\mathbf{y}} = X\,\boldsymbol{\hat{\beta}}.
 $$
 
 If the model was created with `add_bias=True`, `predict` will **automatically prepend** the column of ones to whatever `X` you pass in. It then delegates to the internal `_predict`, which assumes `X` is already in final matrix form (bias included if needed).
@@ -364,7 +364,7 @@ def _predict(self, X: NDArray[np.float64]) -> NDArray[np.float64]:
 
 Residuals are the differences between observed targets and predictions:
 $$
-\mathbf{r} = \mathbf{y} - \hat{\mathbf{y}} = \mathbf{y} - X\boldsymbol{\beta}
+\mathbf{r} = \mathbf{y} - \hat{\mathbf{y}} = \mathbf{y} - X\boldsymbol{\hat{\beta}}
 $$
 
 Use the same `residuals(X, y)` method for either training or test data:
@@ -391,6 +391,8 @@ def _residuals(self, X: NDArray[np.float64], y: NDArray[np.float64]) -> NDArray[
 ```
 
 #### Calculating Statistics
+
+!!! Warning "These statistics may assume that an intercept is included, i.e., `add_bias is True` and $\beta_0$ is not assumed to be $0$. The code will warn you about this too. The key point is that without an intercept, we cannot assume that the residuals have zero mean!"
 
 ##### Residual summary statistics
 
@@ -442,18 +444,18 @@ The **Residual Standard Error** (RSE) measures the typical size of the residuals
 
 It is defined as:
 $$
-\mathrm{RSE} = \sqrt{\frac{\mathrm{RSS}}{n - p}}
+\mathrm{RSE} = \sqrt{\frac{\mathrm{RSS}}{m - p}}
 $$
 
 where:
 
-- $\mathrm{RSS} = \sum_{i=1}^n r_i^2$ is the **Residual Sum of Squares**,
-- $n$ is the number of observations,
-- $p$ is the number of estimated parameters (including the intercept).
+- $\mathrm{RSS} = \sum_{i=1}^m r_i^2$ is the **Residual Sum of Squares**,
+- $m$ is the number of observations,
+- $p$ is the number of estimated parameters, $N + 1$.
 
 This formula is equivalent to taking the square root of the estimated error variance:
 $$
-\hat{\sigma}^2 = \frac{\mathrm{RSS}}{n - p}
+\hat{\sigma}^2 = \frac{\mathrm{RSS}}{m - p}
 \quad\Rightarrow\quad
 \mathrm{RSE} = \sqrt{\hat{\sigma}^2}
 $$
@@ -469,12 +471,12 @@ def residuals_SE(self) -> float:
     residuals = self._residuals(self.X, self.y)
 
     # Number of observations and parameters
-    n = len(residuals)
+    m = len(residuals)
     p = len(self.beta)
 
     # Compute residual sum of squares and standard error
     RSS = np.sum(residuals ** 2)
-    RSE = np.sqrt(RSS / (n - p))
+    RSE = np.sqrt(RSS / (m - p))
 
     return RSE
 ```
@@ -489,20 +491,20 @@ $$
 
 where:
 
-- $\mathrm{RSS} = \sum_{i=1}^n r_i^2$ is the **Residual Sum of Squares** (unexplained variance),
-- $\mathrm{TSS} = \sum_{i=1}^n (y_i - \bar{y})^2$ is the **Total Sum of Squares** (total variance in the data).
+- $\mathrm{RSS} = \sum_{i=1}^m r_i^2$ is the **Residual Sum of Squares** (unexplained variance),
+- $\mathrm{TSS} = \sum_{i=1}^m (y_i - \bar{y})^2$ is the **Total Sum of Squares** (total variance in the data).
 
 While $R^2$ indicates goodness of fit, it always increases when more predictors are added — even if they are not useful.  
 To account for this, we compute the **adjusted $R^2$**:
 
 $$
-R^2_{\text{adj}} = 1 - \frac{\mathrm{RSS}/(n - p)}{\mathrm{TSS}/(n - 1)}
+R^2_{\text{adj}} = 1 - \frac{\mathrm{RSS}/(m - p)}{\mathrm{TSS}/(m - 1)}
 $$
 
 where:
 
-- $n$ = number of observations,
-- $p$ = number of estimated parameters (including the intercept).
+- $m$ = number of observations,
+- $p$ = number of estimated parameters, $N+1$ (including the intercept).
 
 Adjusted $R^2$ penalizes the inclusion of unnecessary predictors, making it a better measure for comparing models with different numbers of features.
 
@@ -515,7 +517,7 @@ def R_squared(self) -> Tuple[float, float]:
     residuals = self._residuals(self.X, self.y)
 
     # Number of observations and estimated parameters
-    n = len(residuals)
+    m = len(residuals)
     p = len(self.beta)
 
     # Residual Sum of Squares (unexplained variance)
@@ -528,7 +530,7 @@ def R_squared(self) -> Tuple[float, float]:
     R_squared = 1 - RSS / TSS
 
     # Adjusted R² penalizes for model complexity
-    R_squared_adj = 1 - (RSS / (n - p)) / (TSS / (n - 1))
+    R_squared_adj = 1 - (RSS / (m - p)) / (TSS / (m - 1))
 
     return R_squared, R_squared_adj
 ```
@@ -538,7 +540,7 @@ def R_squared(self) -> Tuple[float, float]:
 The **$F$-statistic** tests the null hypothesis that **all regression coefficients except the intercept are equal to zero**:
 
 $$
-H_0: \beta_1 = \beta_2 = \dots = \beta_{p-1} = 0
+H_0: \beta_1 = \beta_2 = \dots = \beta_{N} = 0
 $$
 
 In other words, it checks whether the model provides a better fit than one with only the intercept.
@@ -548,14 +550,12 @@ In other words, it checks whether the model provides a better fit than one with 
       $$
       \mathrm{MSR} = \frac{\mathrm{TSS} - \mathrm{RSS}}{df_1}
       $$
-      where:
-        - $df_1 = p - 1$ (if `self._add_bias=True`) 
-        - $df_1 = p$ (if `self._add_bias = False`).
+      where $df_1 = (m - 1) - (m - p)= p - 1$.
     - **Mean Square Error (MSE)** — average unexplained variance per residual degree of freedom:
       $$
       \mathrm{MSE} = \frac{\mathrm{RSS}}{df_2}
       $$
-      where $df_2 = n-p$.
+      where $df_2 = m - p$.
 
 - **Calculate  $F$-statistic and p-value**: 
     The $F$-statistic is the ratio:
@@ -586,7 +586,7 @@ def F_score(self) -> Tuple[float, float]:
     residuals = self._residuals(self.X, self.y)
 
     # Number of observations and number of estimated parameters
-    n = len(residuals)
+    m = len(residuals)
     p = len(self.beta)
 
     # Residual Sum of Squares (RSS) — unexplained variation
@@ -596,11 +596,8 @@ def F_score(self) -> Tuple[float, float]:
     TSS = np.sum((self.y - np.mean(self.y)) ** 2)
 
     # Degrees of freedom
-    if self._add_bias:
-        df1 = p - 1            # Numerator degrees of freedom (model)
-    else:
-        df1 = p
-    df2 = n - p            # Denominator degrees of freedom (residuals)
+    df1 = p - 1            # Numerator degrees of freedom
+    df2 = m - p            # Denominator degrees of freedom (residuals)
 
     # Mean Square Regression and Mean Square Error
     MSR = (TSS - RSS) / df1  # Explained variance per parameter
@@ -634,12 +631,12 @@ The method works as follows:
 - **Estimate the variance of the residuals**:
    Using
    $$
-   \hat{\sigma}^2 = \frac{\text{RSS}}{n - p}
+   \hat{\sigma}^2 = \frac{\text{RSS}}{m - p}
    $$
    where:
        - $\text{RSS} = \sum_i r_i^2$ is the residual sum of squares,
-       - $n$ is the number of observations,
-       - $p$ is the number of estimated parameters (including the intercept).
+       - $m$ is the number of observations,
+       - $p$ is the number of estimated parameters, $N+1$ (including the intercept).
 
 - **Form the variance–covariance matrix of $\boldsymbol{\beta}$**:
    $$
@@ -667,10 +664,10 @@ def coefficients_SE(self) -> NDArray[np.float64]:
     XtX_inv = np.linalg.pinv(self.X.T @ self.X)
 
     # Compute estimated variance of errors
-    n = len(residuals)
+    m = len(residuals)
     p = len(self.beta)
     RSS = np.sum(residuals ** 2)
-    sigma_squared = RSS / (n - p)
+    sigma_squared = RSS / (m - p)
 
     # Compute variance-covariance matrix of beta
     var_beta = sigma_squared * XtX_inv
@@ -695,11 +692,11 @@ Once we have the **standard errors** of the regression coefficients, we can test
 -  **Determine degrees of freedom**
    We use:
    $$
-   \text{df} = n - p
+   \text{df} = m - p
    $$
    where:
-       - $n$ is the number of observations,
-       - $p$ is the number of parameters estimated (including the intercept).
+       - $m$ is the number of observations,
+       - $p$ is the number of parameters estimated, $N + 1$ (including the intercept).
 
 - **Compute two-tailed p-values**
    Under the null hypothesis $H_0 : \beta_j = 0$, the t-statistic follows a **Student’s t-distribution** with $n - p$ degrees of freedom.
@@ -723,11 +720,11 @@ def coefficients_p_values(self) -> Tuple[NDArray[np.float64], NDArray[np.float64
     t_values = self.beta / self.coefficients_SE()
 
     # Number of observations and number of parameters
-    n = len(self.y)
+    m = len(self.y)
     p = len(self.beta)
 
     # Compute two-tailed p-values using the t-distribution CDF
-    p_values = 2 * (1 - stats.t.cdf(np.abs(t_values), df=n - p))
+    p_values = 2 * (1 - stats.t.cdf(np.abs(t_values), df=m - p))
 
     return t_values, p_values
 ```
